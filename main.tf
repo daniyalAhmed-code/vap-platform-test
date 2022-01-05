@@ -1,0 +1,334 @@
+module "role" {
+  source                = "./modules/role"
+  COGNITO_IDENTITY_POOL = module.cognito.COGNITO_IDENTITY_POOL
+  RESOURCE_PREFIX       = local.RESOURCE_PREFIX
+}
+
+module "policy" {
+  source = "./modules/policy"
+  providers = {
+    aws.src    = aws
+    aws.global = aws.global_region
+  }
+
+  API_ROLE_PERMISSION_TABLE_ARN                        = local.API_ROLE_PERMISSION_TABLE_ARN
+  API_PERMISSION_TABLE_ARN                             = local.API_PERMISSION_TABLE_ARN
+  MNO_USERPOOL_ID                                      = module.cognito.MNO_COGNITO_USER_POOL
+  THIRD_PARTY_USERPOOL_ID                              = module.cognito.THIRD_PARTY_COGNITO_USER_POOL
+  MNO_COGNITO_USER_POOL                                = module.cognito.MNO_COGNITO_USERPOOL_ARN
+  THIRD_PARTY_COGNITO_USER_POOL                        = module.cognito.THIRD_PARTY_COGNITO_USERPOOL_ARN
+  MNO_THIRD_PARTY_RESOURCE_TABLE_ARN                   = local.MNO_THIRD_PARTY_RESOURCE_TABLE_ARN
+  CLOUDFRONT_SECURITY_LAMBDA_QUALIFIED_ARN             = module.lambda.CLOUDFRONT_SECURITY_LAMBDA_QUALIFIED_ARN
+  COGNITO_USER_POOL                                    = module.cognito.COGNITO_USERPOOL_ARN
+  LAMBDA_CATALOG_UPDATER_ROLE_NAME                     = module.role.LAMBDA_CATALOG_UPDATER_ROLE_NAME
+  LAMBDA_BACKEND_ROLE_NAME                             = module.role.LAMBDA_BACKEND_ROLE_NAME
+  LAMBDA_ASSET_UPLOADER_ROLE_NAME                      = module.role.LAMBDA_ASSET_UPLOADER_ROLE_NAME
+  CUSTOMER_TABLE_ARN                                   = local.DEV_PORTAL_CUSTOMERS_TABLE_ARN
+  CUSTOMER_TABLE_NAME                                  = local.DEV_PORTAL_CUSTOMERS_TABLE_NAME
+  PRE_LOGIN_TABLE_ARN                                  = local.DEV_PORTAL_PRE_LOGIN_ACCOUNTS_TABLE_ARN
+  AWS_REGION                                           = local.AWS_REGION
+  CURRENT_ACCOUNT_ID                                   = local.CURRENT_ACCOUNT_ID
+  RESOURCE_PREFIX                                      = local.RESOURCE_PREFIX
+  WEBSITE_BUCKET_NAME                                  = local.DEV_PORTAL_SITE_S3_BUCKET
+  ARTIFACTS_S3_BUCKET_NAME                             = local.ARTIFICATS_S3_BUCKET
+  CATALOG_UPDATER_LAMBDA_NAME                          = module.lambda.CATALOG_UPDATER_LAMBDA_NAME
+  LAMBDA_COGNITO_PRESIGNUP_TRIGGER_ROLE_NAME           = module.role.LAMBDA_COGNITO_PRESIGNUP_TRIGGER_ROLE_NAME
+  LAMBDA_COGNITO_POST_AUTHENTICATION_TRIGGER_ROLE_NAME = module.role.LAMBDA_COGNITO_POST_AUTHENTICATION_TRIGGER_ROLE_NAME
+  LAMBDA_COGNITO_POST_CONFIRMATION_TRIGGER_ROLE_NAME   = module.role.LAMBDA_COGNITO_POST_CONFIRMATION_TRIGGER_ROLE_NAME
+  LAMBDA_COGNITO_USERPOOL_CLIENT_SETTING_ROLE_NAME     = module.role.LAMBDA_COGNITO_USERPOOL_CLIENT_SETTING_ROLE_NAME
+  LAMBDA_COGNITO_USERPOOL_DOMAIN_ROLE_NAME             = module.role.LAMBDA_COGNITO_USERPOOL_DOMAIN_ROLE_NAME
+  LAMBDA_USERGROUP_IMPORTER_ROLE_NAME                  = module.role.LAMBDA_USERGROUP_IMPORTER_ROLE_NAME
+  LAMBDA_DUMP_V3_ACCOUNT_ROLE_NAME                     = module.role.LAMBDA_DUMP_V3_ACCOUNT_ROLE_NAME
+  LAMBDA_COGNITO_PRE_SIGNUP_NAME                       = module.lambda.COGNITO_PRESIGNUP_TRIGGER_LAMBDA_NAME
+  LAMBDA_COGNITO_POST_CONFIRMATION_NAME                = module.lambda.COGNITO_POST_CONFIRMATION_TRIGGER_LAMBDA_NAME
+  LAMBDA_COGNITO_POST_AUTHENTICATION_NAME              = module.lambda.COGNITO_POST_AUTHENTICATION_TRIGGER_LAMBDA_NAME
+  LAMBDA_CLOUDFRONT_SECURITY                           = module.lambda.CLOUDFRONT_SECURITY_LAMBDA_NAME
+  LAMBDA_SECURITY_HEADER                               = module.lambda.CLOUDFRONT_SECURITY_HEADER_NAME
+  LAMBDA_AUTHORIZATION_ROLE_ARN                        = module.role.LAMBDA_AUTHORIZATION_ROLE_ARN
+  LAMBDA_AUTHORIZATION_ROLE_NAME                       = module.role.LAMBDA_AUTHORIZATION_ROLE_NAME
+  USERPOOL_ID                                          = module.cognito.COGNITO_USER_POOL
+  API_GATEWAY_API                                      = module.api.API_GATEWAY_API
+  COGNITO_ADMIN_GROUP_ROLE                             = module.role.COGNITO_ADMIN_GROUP_ROLE_NAME
+  COGNITO_REGISTERED_GROUP_ROLE                        = module.role.COGNITO_REGISTERED_GROUP_ROLE_NAME
+  LAMBDA_CLOUDFRONT_SECURITY_ROLE                      = module.role.CLOUDFRONT_SECURITY_ROLE_NAME
+  ORIGIN_ACCESS_IDENTITY                               = module.cloudfront.id
+  API_KEY_AUTHORIZATION_LAMBDA_ARN                     = module.lambda.API_KEY_AUTHORIZATION_LAMBDA_ARN
+  API_KEY_AUTHORIZATION_ROLE_NAME                      = module.role.API_KEY_AUTHORIZATION_ROLE_NAME
+  CATALOG_UPDATER_LAMBDA_ARN                           = module.lambda.CATALOG_UPDATER_LAMBDA_ARN
+  COGNITO_SMS_CALLER_ROLE_NAME                         = module.role.SMS_CALLER_ROLE_NAME
+  API_KEY_ROTATION_LAMBDA_NAME                         = module.lambda.API_KEY_ROTATION_LAMBDA_NAME
+  INVOKE_API_KEY_ROTATION_LAMBDA_NAME                  = module.lambda.INVOKE_API_KEY_ROTATION_LAMBDA_NAME
+  LAMBDA_INVOKE_API_KEY_ROTATION_ROLE_NAME             = module.role.LAMBDA_INVOKE_API_KEY_ROTATION_ROLE_NAME
+  LAMBDA_API_KEY_ROTATION_ROLE_NAME                    = module.role.LAMBDA_API_KEY_ROTATION_ROLE_NAME
+  LAMBDA_INVOKE_API_KEY_ROTATION_ROLE_ARN              = module.role.LAMBDA_INVOKE_API_KEY_ROTATION_ROLE_ARN
+  LAMBDA_API_KEY_ROTATION_ROLE_ARN                     = module.role.LAMBDA_API_KEY_ROTATION_ROLE_ARN
+  BACKEND_LAMBDA_NAME                                  = module.lambda.BACKEND_LAMBDA_NAME
+  COGNITO_USERPOOL_CLIENT_SETTINGS_NAME                = module.lambda.COGNITO_USERPOOL_CLIENT_SETTINGS_NAME
+  API_KEY_AUTHORIZATION_LAMBDA_NAME                    = module.lambda.API_KEY_AUTHORIZATION_LAMBDA_NAME
+  API_GATEWAY_ID                                       = module.api.API_GATEWAY_ID
+  CUSTOMER_REQUEST_LOGS_TABLE_ARN                      = local.DEV_PORTAL_CUSTOMER_REQUEST_LOGS_TABLE_ARN
+  DEVELOPER_PORTAL_AUTHORIZER_ROLE_NAME                = module.role.LAMBDA_DEVELOPER_PORTAL_AUTHORIZER_ROLE_NAME
+  DEVELOPER_PORTAL_AUTHORIZATION_LAMBDA_NAME           = module.lambda.DEVELOPER_PORTAL_AUTHORIZATION_LAMBDA_NAME
+  
+}
+
+module "lambda" {
+  source = "./modules/lambda"
+  providers = {
+    aws.src    = aws
+    aws.global = aws.global_region
+  }
+  ARTIFACTS_S3_BUCKET_NAME                            = local.ARTIFICATS_S3_BUCKET
+
+  MNO_THIRD_PARTY_RESOURCE_TABLE_NAME                 =local.MNO_THIRD_PARTY_RESOURCE_TABLE_NAME
+  MNO_USERPOOL_ID                                     = module.cognito.MNO_COGNITO_USER_POOL
+  THIRD_PARTY_USERPOOL_ID                             = module.cognito.THIRD_PARTY_COGNITO_USER_POOL
+  DEVELOPER_PORTAL_AUTHORIZER_ROLE_ARN                = module.role.LAMBDA_DEVELOPER_PORTAL_AUTHORIZER_ROLE_ARN
+  LAMBDA_CATALOG_UPDATER_ROLE_ARN                     = module.role.LAMBDA_CATALOG_UPDATER_ROLE_ARN
+  LAMBDA_BACKEND_ROLE_ARN                             = module.role.LAMBDA_BACKEND_ROLE_ARN
+  LAMBDA_ASSET_UPLOADER_ROLE_ARN                      = module.role.LAMBDA_ASSET_UPLOADER_ROLE_ARN
+  LAMBDA_COGNITO_PRESIGNUP_TRIGGER_ROLE_ARN           = module.role.LAMBDA_COGNITO_PRESIGNUP_TRIGGER_ROLE_ARN
+  LAMBDA_COGNITO_POST_AUTHENTICATION_TRIGGER_ROLE_ARN = module.role.LAMBDA_COGNITO_POST_AUTHENTICATION_TRIGGER_ROLE_ARN
+  LAMBDA_COGNITO_POST_CONFIRMATION_TRIGGER_ROLE_ARN   = module.role.LAMBDA_COGNITO_POST_CONFIRMATION_TRIGGER_ROLE_ARN
+  LAMBDA_COGNITO_USERPOOL_CLIENT_SETTING_ROLE_ARN     = module.role.LAMBDA_COGNITO_USERPOOL_CLIENT_SETTING_ROLE_ARN
+  LAMBDA_COGNITO_USERPOOL_DOMAIN_ROLE_ARN             = module.role.LAMBDA_COGNITO_USERPOOL_DOMAIN_ROLE_ARN
+  LAMBDA_USERGROUP_IMPORTER_ROLE_ARN                  = module.role.LAMBDA_USERGROUP_IMPORTER_ROLE_ARN
+  LAMBDA_DUMP_V3_ACCOUNT_ROLE_ARN                     = module.role.LAMBDA_DUMP_V3_ACCOUNT_ROLE_ARN
+  LAMBDA_CLOUDFRONT_SECURITY_ROLE_ARN                 = module.role.CLOUDFRONT_SECURITY_ROLE_ARN
+  LAMBDA_AUTHORIZATION_ROLE_ARN                       = module.role.LAMBDA_AUTHORIZATION_ROLE_ARN
+  NODE_ENV                                            = var.NODE_ENV
+  WEBSITE_BUCKET_NAME                                 = local.DEV_PORTAL_SITE_S3_BUCKET
+  CUSTOMER_TABLE_NAME                                 = local.DEV_PORTAL_CUSTOMERS_TABLE_NAME
+  PRE_LOGIN_ACCOUNT_TABLE_NAME                        = local.DEV_PORTAL_PRE_LOGIN_ACCOUNTS_TABLE_NAME
+  FEEDBACK_TABLE_NAME                                 = local.DEV_PORTAL_FEEDBACK_TABLE_NAME
+  FEEDBACK_SNS_TOPIC_ARN                              = local.ENABLE_FEEDBACK_SUBMISSION
+  USERPOOL_ID                                         = module.cognito.COGNITO_USER_POOL
+  IS_ADMIN                                            = local.IS_ADMIN
+  ADMIN_GROUP_NAME                                    = local.ADMIN_GROUP_NAME
+  RESOURCE_PREFIX                                     = local.RESOURCE_PREFIX
+  ACCOUNT_REGISTRATION_MODE                           = var.ACCOUNT_REGISTRATION_MODE
+  REGISTERED_GROUP_NAME                               = local.REGISTERED_GROUP_NAME
+  DEVELOPMENT_MODE                                    = var.DEVELOPMENT_MODE ? true : false
+  AWS_REGION                                          = data.aws_region.current.name
+  AWS_ACCOUNT_ID                                      = local.CURRENT_ACCOUNT_ID
+  API_GATEWAY_API                                     = module.api.API_GATEWAY_ID
+  FEEDBACK_ENABLED                                    = local.IS_ADMIN
+  USERPOOL_DOMAIN                                     = "https://${var.COGNITO_USER_POOL_DOMAIN}.auth.${data.aws_region.current.name}.amazoncognito.com"
+  USERPOOL_CLIENT_ID                                  = module.cognito.COGNITO_USERPOOL_CLIENT
+  IDENTITYPOOL_ID                                     = module.cognito.COGNITO_IDENTITY_POOL
+  APIGATEWAY_CUSTOM_DOMAIN_NAME                       = var.APIGATEWAY_CUSTOM_DOMAIN_NAME
+  LAMBDA_INVOKE_API_KEY_ROTATION_ROLE_ARN             = module.role.LAMBDA_INVOKE_API_KEY_ROTATION_ROLE_ARN
+  LAMBDA_API_KEY_ROTATION_ROLE_ARN                    = module.role.LAMBDA_API_KEY_ROTATION_ROLE_ARN
+  CUSTOMER_REQUEST_LOGS_TABLE_NAME                    = local.DEV_PORTAL_CUSTOMER_REQUEST_LOGS_TABLE_NAME
+  API_PERMISSION_TABLE_NAME                           =local.API_PERMISSION_TABLE_NAME
+  API_ROLE_PERMISSION_TABLE_NAME                      = local.API_ROLE_PERMISSION_TABLE_NAME
+}
+
+
+module "api" {
+  source                           = "./modules/api_devportal"
+  RESOURCE_PREFIX                  = local.RESOURCE_PREFIX
+  ENV                              = var.ENV
+  CORS_ALLOW_ORIGIN                = local.CORS_ALLOW_ORIGIN
+  BACKEND_LAMBDA_INVOKE_ARN        = module.lambda.BACKEND_LAMBDA_INVOKE_ARN
+  BACKEND_LAMBDA_NAME              = module.lambda.BACKEND_LAMBDA_NAME
+  USE_CUSTOM_DOMAIN_NAME           = local.USE_CUSTOM_DOMAIN_NAME
+  DOMAIN_NAME                      = module.cloudfront.CLOUDFRONT_DOMAIN
+  CURRENT_ACCOUNT_ID               = data.aws_caller_identity.current.account_id
+  AWS_REGION                       = data.aws_region.current.name
+  API_KEY_AUTHORIZATION_ROLE_ARN   = module.role.API_KEY_AUTHORIZATION_ROLE_ARN
+  API_KEY_AUTHORIZATION_INVOKE_ARN = module.lambda.API_KEY_AUTHORIZATION_INVOKE_ARN
+  APIGATEWAY_CUSTOM_DOMAIN_NAME    = var.APIGATEWAY_CUSTOM_DOMAIN_NAME
+  LAMBDA_SIGNIN_INVOKE_ARN         = module.lambda.LAMBDA_SIGNIN_INVOKE_ARN
+  LAMBDA_GET_CATALOG_INVOKE_ARN    = module.lambda.LAMBDA_GET_CATALOG_INVOKE_ARN
+  LAMBDA_GET_APIKEY_INVOKE_ARN     = module.lambda.LAMBDA_GET_APIKEY_INVOKE_ARN
+  LAMBDA_GET_SDK_INVOKE_ARN        = module.lambda.LAMBDA_GET_SDK_INVOKE_ARN
+  LAMBDA_GET_SUBSCRIPTION_INVOKE_ARN    = module.lambda.LAMBDA_GET_SUBSCRIPTION_INVOKE_ARN
+  LAMBDA_UPDATE_SUBSCRIPTION_USAGE_PLAN_INVOKE_ARN  = module.lambda.LAMBDA_UPDATE_SUBSCRIPTION_USAGE_PLAN_INVOKE_ARN
+  LAMBDA_DELETE_SUBSCRIPTION_USAGE_PLAN_INVOKE_ARN  = module.lambda.LAMBDA_DELETE_SUBSCRIPTION_USAGE_PLAN_INVOKE_ARN
+  LAMBDA_GET_SUBSCRIPTION_USAGE_PLAN_INVOKE_ARN     = module.lambda.LAMBDA_GET_SUBSCRIPTION_USAGE_PLAN_INVOKE_ARN
+  LAMBDA_GET_FEEDBACK_INVOKE_ARN  = module.lambda.LAMBDA_GET_FEEDBACK_INVOKE_ARN
+  LAMBDA_EXPORT_API_INVOKE_ARN  = module.lambda.LAMBDA_EXPORT_API_INVOKE_ARN
+  LAMBDA_POST_FEEDBACK_INVOKE_ARN  = module.lambda.LAMBDA_POST_FEEDBACK_INVOKE_ARN
+  LAMBDA_UPDATE_SDK_GENERATION_IN_CATALOG_API_INVOKE_ARN  = module.lambda.LAMBDA_UPDATE_SDK_GENERATION_IN_CATALOG_API_INVOKE_ARN
+  LAMBDA_DELETE_SDK_GENERATION_IN_CATALOG_API_INVOKE_ARN  = module.lambda.LAMBDA_DELETE_SDK_GENERATION_IN_CATALOG_API_INVOKE_ARN
+  LAMBDA_GET_ALL_CATALOGS_INVOKE_ARN  = module.lambda.LAMBDA_GET_ALL_CATALOGS_INVOKE_ARN
+  LAMBDA_GET_ALL_ACCOUNTS_INVOKE_ARN  = module.lambda.LAMBDA_GET_ALL_ACCOUNTS_INVOKE_ARN
+  LAMBDA_ADD_NEW_API_TO_CATALOGS_INVOKE_ARN  = module.lambda.LAMBDA_ADD_NEW_API_TO_CATALOGS_INVOKE_ARN
+  LAMBDA_DELETE_API_FROM_CATALOGS_INVOKE_ARN  = module.lambda.LAMBDA_DELETE_API_FROM_CATALOGS_INVOKE_ARN
+  LAMBDA_CREATE_NEW_ACCOUNT_INVOKE_ARN  = module.lambda.LAMBDA_CREATE_NEW_ACCOUNT_INVOKE_ARN
+  LAMBDA_PROMOTE_USER_TO_ADMIN_INVOKE_ARN  = module.lambda.LAMBDA_PROMOTE_USER_TO_ADMIN_INVOKE_ARN
+  LAMBDA_DELETE_USER_INVOKE_ARN  = module.lambda.LAMBDA_DELETE_USER_INVOKE_ARN
+  LAMBDA_GET_USER_CALLBACKAUTH_INVOKE_ARN  = module.lambda.LAMBDA_GET_USER_CALLBACKAUTH_INVOKE_ARN
+  LAMBDA_GET_CURRENT_USER_PROFILE_INVOKE_ARN  = module.lambda.LAMBDA_GET_CURRENT_USER_PROFILE_INVOKE_ARN
+  LAMBDA_RESEND_INVITE_INVOKE_ARN  = module.lambda.LAMBDA_RESEND_INVITE_INVOKE_ARN
+  LAMBDA_GET_USER_PROFILE_IMAGE_INVOKE_ARN  = module.lambda.LAMBDA_GET_USER_PROFILE_IMAGE_INVOKE_ARN
+  LAMBDA_UPDATE_USER_PROFILE_IMAGE_INVOKE_ARN  = module.lambda.LAMBDA_UPDATE_USER_PROFILE_IMAGE_INVOKE_ARN
+  GET_APIKEY_LAMBDA_NAME                       = module.lambda.GET_APIKEY_LAMBDA_NAME
+  GET_CATALOG_LAMBDA_NAME                 = module.lambda.GET_CATALOG_LAMBDA_NAME
+  GET_SUBSCRIPTION_LAMBDA_NAME                 = module.lambda.GET_SUBSCRIPTION_LAMBDA_NAME
+  UPDATE_SUBSCRIPTION_USAGE_PLAN_LAMBDA_NAME                 = module.lambda.UPDATE_SUBSCRIPTION_USAGE_PLAN_LAMBDA_NAME
+  DELETE_SUBSCRIPTION_USAGE_PLAN_LAMBDA_NAME                 = module.lambda.DELETE_SUBSCRIPTION_USAGE_PLAN_LAMBDA_NAME
+  GET_SUBSCRIPTION_USAGE_PLAN_LAMBDA_NAME                 = module.lambda.GET_SUBSCRIPTION_USAGE_PLAN_LAMBDA_NAME
+  GET_FEEDBACK_LAMBDA_NAME                 = module.lambda.GET_FEEDBACK_LAMBDA_NAME
+  POST_FEEDBACK_LAMBDA_NAME                 = module.lambda.POST_FEEDBACK_LAMBDA_NAME
+  GET_SDK_LAMBDA_NAME                 = module.lambda.GET_SDK_LAMBDA_NAME
+  EXPORT_API_LAMBDA_NAME                 = module.lambda.EXPORT_API_LAMBDA_NAME
+  UPDATE_SDK_GENERATION_IN_CATALOG_API_LAMBDA_NAME                 = module.lambda.UPDATE_SDK_GENERATION_IN_CATALOG_API_LAMBDA_NAME
+  DELETE_SDK_GENERATION_IN_CATALOG_API_LAMBDA_NAME                 = module.lambda.DELETE_SDK_GENERATION_IN_CATALOG_API_LAMBDA_NAME
+  GET_ALL_CATALOGS_LAMBDA_NAME                 = module.lambda.GET_ALL_CATALOGS_LAMBDA_NAME
+  ADD_NEW_API_TO_CATALOGS_LAMBDA_NAME                 = module.lambda.ADD_NEW_API_TO_CATALOGS_LAMBDA_NAME
+  DELETE_API_FROM_CATALOGS_LAMBDA_NAME                 = module.lambda.DELETE_API_FROM_CATALOGS_LAMBDA_NAME
+  GET_ALL_ACCOUNTS_LAMBDA_NAME                 = module.lambda.GET_ALL_ACCOUNTS_LAMBDA_NAME
+  CREATE_NEW_ACCOUNT_LAMBDA_NAME                 = module.lambda.CREATE_NEW_ACCOUNT_LAMBDA_NAME
+  PROMOTE_USER_TO_ADMIN_LAMBDA_NAME                 = module.lambda.PROMOTE_USER_TO_ADMIN_LAMBDA_NAME
+  DELETE_USER_LAMBDA_NAME                 = module.lambda.DELETE_USER_LAMBDA_NAME
+  GET_USER_CALLBACKAUTH_LAMBDA_NAME                 = module.lambda.GET_USER_CALLBACKAUTH_LAMBDA_NAME
+  RESEND_INVITE_LAMBDA_NAME                 = module.lambda.LAMBDA_RESEND_INVITE_LAMBDA_NAME
+  GET_CURRENT_USER_PROFILE_LAMBDA_NAME                 = module.lambda.GET_CURRENT_USER_PROFILE_LAMBDA_NAME
+  UPDATE_USER_PROFILE_IMAGE_LAMBDA_NAME                 = module.lambda.UPDATE_USER_PROFILE_IMAGE_LAMBDA_NAME
+  GET_USER_PROFILE_IMAGE_LAMBDA_NAME                 = module.lambda.GET_USER_PROFILE_IMAGE_LAMBDA_NAME
+  SIGNIN_LAMBDA_NAME                        =module.lambda.SIGNIN_LAMBDA_NAME
+  LAMBDA_CREATE_MNO_THIRD_PARTY_RESOURCE_INVOKE_ARN  = module.lambda.LAMBDA_CREATE_MNO_THIRD_PARTY_RESOURCE_INVOKE_ARN
+  CREATE_MNO_THIRD_PARTY_RESOURCE_LAMBDA_NAME  = module.lambda.CREATE_MNO_THIRD_PARTY_RESOURCE_LAMBDA_NAME
+  LAMBDA_CREATE_PERMISION_FOR_API_INVOKE_ARN   = module.lambda.LAMBDA_CREATE_PERMISION_FOR_API_INVOKE_ARN
+  CREATE_PERMISION_FOR_API_LAMBDA_NAME         = module.lambda.CREATE_PERMISION_FOR_API_LAMBDA_NAME
+  LAMBDA_GET_ALLOWED_APIS_FOR_RESOURCE_INVOKE_ARN  = module.lambda.LAMBDA_GET_ALLOWED_APIS_FOR_RESOURCE_INVOKE_ARN
+  GET_ALLOWED_APIS_FOR_RESOURCE_LAMBDA_NAME        = module.lambda.GET_ALLOWED_APIS_FOR_RESOURCE_LAMBDA_NAME
+  LAMBDA_DELETE_ALLOWED_APIS_FOR_RESOURCE_INVOKE_ARN = module.lambda.LAMBDA_DELETE_ALLOWED_APIS_FOR_RESOURCE_INVOKE_ARN
+  DELETE_ALLOWED_APIS_FOR_RESOURCE_LAMBDA_NAME = module.lambda.DELETE_ALLOWED_APIS_FOR_RESOURCE_LAMBDA_NAME
+  LAMBDA_GET_MNO_THIRD_PARTY_RESOURCE_INVOKE_ARN = module.lambda.LAMBDA_GET_MNO_THIRD_PARTY_RESOURCE_INVOKE_ARN
+  GET_MNO_THIRD_PARTY_RESOURCE_LAMBDA_NAME = module.lambda.GET_MNO_THIRD_PARTY_RESOURCE_LAMBDA_NAME
+  CERTIFICATE_ARN                  = var.ACM_CERTIFICATE_ARN
+  DEVELOPER_PORTAL_AUTHORIZATION_INVOKE_ARN = module.lambda.DEVELOPER_PORTAL_AUTHORIZATION_INVOKE_ARN
+  DEVELOPER_PORTAL_AUTHORIZATION_LAMBDA_NAME  = module.lambda.DEVELOPER_PORTAL_AUTHORIZATION_LAMBDA_NAME
+  LAMBDA_DEVELOPER_PORTAL_AUTHORIZER_ROLE_ARN = module.role.LAMBDA_DEVELOPER_PORTAL_AUTHORIZER_ROLE_ARN
+}
+
+module "cloudfront" {
+  source = "./modules/cloudfront"
+  providers = {
+    aws = aws.global_region
+  }
+  DEVELOPMENT_MODE                 = var.DEVELOPMENT_MODE
+  RESOURCE_PREFIX                  = local.RESOURCE_PREFIX
+  CUSTOM_DOMAIN_NAME               = var.CUSTOM_DOMAIN_NAME
+  DEV_PORTAL_SITE_S3_BUCKET        = local.DEV_PORTAL_SITE_S3_BUCKET
+  ARTIFACTS_S3_BUCKET_NAME         = local.ARTIFICATS_S3_BUCKET
+  CLOUDFRONT_SECURITY_HEADER_SETUP = module.lambda.CLOUDFRONT_SECURITY_HEADER_QUALIFIED_ARN
+  ORIGIN_ID                        = var.ORIGIN_ID
+  AWS_REGION                       = data.aws_region.current.name
+  ACM_CERTIFICATE_ARN              = var.ACM_CERTIFICATE_ARN
+  BUCKET_REGIONAL_DOMAIN_NAME      = local.BUCKET_REGIONAL_DOMAIN_NAME
+  waf_acl_id                       = local.global_waf_id
+  LOGGING_BUCKET                   = var.LOGGING_BUCKET
+}
+
+module "route53" {
+  source             = "./modules/route53"
+  USE_ROUTE53        = var.USE_ROUTE53
+  CUSTOM_DOMAIN_NAME = var.CUSTOM_DOMAIN_NAME
+  HOSTED_ZONE_ID     = var.HOSTED_ZONE_ID
+  DNS_NAME           = module.cloudfront.CLOUDFRONT_DOMAIN
+}
+
+
+module "cognito" {
+  source                               = "./modules/cognito"
+  THIRD_PARTY_COGNITO_USER_POOL        = local.THIRD_PARTY_COGNITO_USER_POOL
+  MNO_COGNITO_USER_POOL                = local.MNO_COGNITO_USER_POOL
+  COGNITO_USER_POOL                    = local.COGNITO_USER_POOL
+  ALLOW_ADMIN_CREATE_USER_ONLY         = var.ALLOW_ADMIN_CREATE_USER_ONLY
+  CUSTOM_DOMAIN_NAME                   = var.CUSTOM_DOMAIN_NAME
+  AWS_REGION                           = local.AWS_REGION
+  AWS_ACCOUNT_ID                       = local.CURRENT_ACCOUNT_ID
+  RESOURCE_PREFIX                      = local.RESOURCE_PREFIX
+  COGNITO_USER_POOL_CLIENT             = local.COGNITO_USER_POOL_CLIENT
+  MNO_COGNITO_USER_POOL_CLIENT         = local.MNO_COGNITO_USER_POOL_CLIENT
+  THIRD_PARTY_COGNITO_USER_POOL_CLIENT = local.THIRD_PARTY_COGNITO_USER_POOL_CLIENT
+  COGNITO_ADMIN_GROUP_DESCRIPTION      = var.COGNITO_ADMIN_GROUP_DESCRIPTION
+  COGNITO_REGISTERED_GROUP_DESCRIPTION = var.COGNITO_REGISTERED_GROUP_DESCRIPTION
+  COGNITO_USER_POOL_DOMAIN             = var.COGNITO_USER_POOL_DOMAIN
+  THIRD_PARTY_COGNITO_USER_POOL_DOMAIN = var.THIRD_PARTY_COGNITO_USER_POOL_DOMAIN
+  MNO_COGNITO_USER_POOL_DOMAIN         = var.MNO_COGNITO_USER_POOL_DOMAIN
+  DNS_NAME                             = module.cloudfront.CLOUDFRONT_DOMAIN
+  REGISTERED_GROUP_NAME                = local.REGISTERED_GROUP_NAME
+  ADMIN_GROUP_NAME                     = local.ADMIN_GROUP_NAME
+  # LOCAL_DEVELOPMENT_MODE = var.LOCAL_DEVELOPMENT_MODE
+  COGNITO_REGISTERED_GROUP_ROLE_ARN = module.role.COGNITO_REGISTERED_GROUP_ROLE_ARN
+  COGNITO_ADMIN_GROUP_ROLE_ARN      = module.role.COGNITO_ADMIN_GROUP_ROLE_ARN
+  COGNITO_SMS_CALLER_ROLE_ARN       = module.role.SMS_CALLER_ROLE_ARN
+  # BUCEKT_REGIONAL_DOMAIN_NAME = var.BUCKET_REGIONAL_NAME
+}
+
+module "cw" {
+  source = "./modules/cw"
+  RESOURCE_PREFIX = local.RESOURCE_PREFIX
+  API_KEY_ROTATION_TRIGGER_FREQUENCY = var.API_KEY_ROTATION_TRIGGER_FREQUENCY
+  API_KEY_ROTATION_LAMBDA_INVOKE_ARN       = module.lambda.API_KEY_ROTATION_LAMBDA_INVOKE_ARN
+  API_KEY_ROTATION_LAMBDA_NAME              = module.lambda.API_KEY_ROTATION_LAMBDA_NAME
+}
+
+### API ###
+
+resource "aws_api_gateway_account" "this" {
+  depends_on          = [aws_iam_role.api_gateway_cloudwatch]
+  cloudwatch_role_arn = aws_iam_role.api_gateway_cloudwatch.arn
+}
+
+resource "aws_iam_role" "api_gateway_cloudwatch" {
+  name               = "api-gateway-cloudwatch-role"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "apigateway.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "api_gateway_cloudwatch" {
+  name = "api-gateway-cloudwatch-policy"
+  role = aws_iam_role.api_gateway_cloudwatch.id
+  #tfsec:ignore:AWS099
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:DescribeLogGroups",
+                "logs:DescribeLogStreams",
+                "logs:PutLogEvents",
+                "logs:GetLogEvents",
+                "logs:FilterLogEvents"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_route53_record" "www" {
+  zone_id = var.HOSTED_ZONE_ID
+  name    = var.APIGATEWAY_CUSTOM_DOMAIN_NAME
+  type    = "A"
+
+  alias {
+    name                   = module.api.API_GATEWAY_CLOUDFRONT_DOMAIN
+    zone_id                = module.api.API_GATEWAY_CLOUDFRONT_ZONE_ID
+    evaluate_target_health = true
+  }
+}

@@ -1,0 +1,21 @@
+# Terraform files
+.terraform
+terraform.tfstate
+terraform.tfvars
+*.tfstate*
+.terraform.lock.hcl
+
+# IDE Files
+.idea
+
+# Build Folders
+builds
+
+# Ignore Zip files From Lambda
+modules/lambda/zip/*
+
+# Ignore Environment Files
+.env.dev
+.env.pprod
+.env.prod
+prequisite.sh
