@@ -41,8 +41,11 @@ locals {
   AWS_REGION             = data.aws_region.current.name
   CURRENT_ACCOUNT_ID     = data.aws_caller_identity.current.account_id
 
-  REGISTERED_GROUP_NAME = "${local.RESOURCE_PREFIX}-registered-group"
-  ADMIN_GROUP_NAME      = "${local.RESOURCE_PREFIX}-admin-group"
+  REGISTERED_GROUP_NAME = "registered-group"
+  ADMIN_GROUP_NAME      = "super-admin"
+  MNO_ADMIN_GROUP_NAME  = "admin"
+  THIRD_PARTY_ADMIN_GROUP_NAME  = "third-party-admin"
+
 
   global_waf_id   = data.terraform_remote_state.vap-platform-infra.outputs.global_waf_id
 }
