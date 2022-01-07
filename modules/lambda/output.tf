@@ -303,3 +303,113 @@ output "DEVELOPER_PORTAL_AUTHORIZATION_INVOKE_ARN" {
 output "DEVELOPER_PORTAL_AUTHORIZATION_LAMBDA_NAME" {
   value = aws_lambda_function.lambda_developer_portal_authoriser_function.function_name
 }
+
+
+output "LAMBDA_GET_MNO_THIRD_PARTY_RESOURCE_BY_ID_INVOKE_ARN"{
+  value = aws_lambda_function.lambda_get_mno_third_party_resources_by_id_function.invoke_arn
+}
+output "GET_MNO_THIRD_PARTY_RESOURCE_BY_ID_LAMBDA_NAME"{
+  value = aws_lambda_function.lambda_get_mno_third_party_resources_by_id_function.function_name
+}
+
+output "LAMBDA_GET_MNO_RESOURCE_BY_TYPE_INVOKE_ARN"{
+  value = aws_lambda_function.lambda_get_mno_resources_by_type_function.invoke_arn
+}
+output "GET_MNO_RESOURCE_BY_TYPE_LAMBDA_NAME"{
+  value = aws_lambda_function.lambda_get_mno_resources_by_type_function.function_name
+}
+
+output "LAMBDA_GET_THIRD_PARTY_RESOURCE_BY_TYPE_INVOKE_ARN"{
+  value = aws_lambda_function.lambda_get_third_party_resources_by_type_function.invoke_arn
+}
+output "GET_THIRD_PARTY_RESOURCE_BY_TYPE_LAMBDA_NAME"{
+  value = aws_lambda_function.lambda_get_third_party_resources_by_type_function.function_name
+}
+
+
+output "LAMBDA_GET_THIRD_PARTY_USER_BY_ID_INVOKE_ARN"{
+  value = aws_lambda_function.lambda_get_third_party_user_by_id_function.invoke_arn
+}
+output "GET_THIRD_PARTY_USER_BY_ID_LAMBDA_NAME"{
+  value = aws_lambda_function.lambda_get_third_party_user_by_id_function.function_name
+}
+
+output "LAMBDA_GET_MNO_USER_BY_ID_INVOKE_ARN"{
+  value = aws_lambda_function.lambda_get_mno_user_by_id_function.invoke_arn
+}
+output "GET_MNO_USER_BY_ID_LAMBDA_NAME"{
+  value = aws_lambda_function.lambda_get_mno_user_by_id_function.function_name
+}
+
+output "LAMBDA_GET_THIRD_PARTY_RESOURCES_USERS_ACCOUNTS_INVOKE_ARN"{
+  value = aws_lambda_function.lambda_get_third_party_resource_users_account_function.invoke_arn
+}
+output "GET_THIRD_PARTY_RESOURCES_USERS_ACCOUNTS_LAMBDA_NAME"{
+  value = aws_lambda_function.lambda_get_third_party_resource_users_account_function.function_name
+}
+
+
+
+output "LAMBDA_GET_MNO_RESOURCES_USERS_ACCOUNTS_INVOKE_ARN"{
+  value = aws_lambda_function.lambda_get_mno_resource_users_account_function.invoke_arn
+}
+output "GET_MNO_RESOURCES_USERS_ACCOUNTS_LAMBDA_NAME"{
+  value = aws_lambda_function.lambda_get_mno_resource_users_account_function.function_name
+}
+
+output "LAMBDA_THIRD_PARTY_RESOURCE_USER_INVOKE_ARN" {
+  value = aws_lambda_function.lambda_create_third_party_resource_user_function.invoke_arn
+}
+
+output "CREATE_THIRD_PARTY_RESOURCE_USER_LAMBDA_NAME" {
+  value = aws_lambda_function.lambda_create_third_party_resource_user_function.function_name
+}
+
+output "LAMBDA_DELETE_THIRD_PARTY_RESOURCE_USER_INVOKE_ARN" {
+  value = aws_lambda_function.lambda_delete_mno_resource_user_function.invoke_arn
+}
+
+output "DELETE_THIRD_PARTY_RESOURCE_USER_LAMBDA_NAME" {
+  value = aws_lambda_function.lambda_delete_mno_resource_user_function.function_name
+}
+
+output "LAMBDA_DELETE_MNO_RESOURCE_USER_INVOKE_ARN" {
+  value = aws_lambda_function.lambda_delete_mno_resource_user_function.invoke_arn
+}
+
+output "DELETE_MNO_RESOURCE_USER_LAMBDA_NAME" {
+  value = aws_lambda_function.lambda_delete_mno_resource_user_function.function_name
+}
+
+output "CREATE_MNO_RESOURCE_USER_LAMBDA_NAME" {
+  value = aws_lambda_function.lambda_create_mno_resource_user_function.function_name
+}
+output "LAMBDA_MNO_RESOURCE_USER_INVOKE_ARN" {
+  value = aws_lambda_function.lambda_create_third_party_resource_user_function.invoke_arn
+}
+
+output "LAMBDA_UPDATE_PERMISION_FOR_API_INVOKE_ARN"{
+  value = aws_lambda_function.lambda_update_allowed_api_for_resource_function.invoke_arn
+}
+output "UPDATE_PERMISION_FOR_API_LAMBDA_NAME"{
+  value = aws_lambda_function.lambda_update_allowed_api_for_resource_function.function_name
+}
+
+output "LAMBDA_UPDATE_USER_ACCOUNT_INVOKE_ARN"{
+  value = aws_lambda_function.lambda_update_user_account_function.invoke_arn
+
+}
+output "UPDATE_USER_ACCOUNT_LAMBDA_NAME"{
+  value = aws_lambda_function.lambda_update_user_account_function.function_name
+
+}
+
+output "LAMBDA_GET_ALL_APIS_FOR_RESOURCE_INVOKE_ARN"{
+  value = aws_lambda_function.lambda_get_all_apis_for_resource_function.invoke_arn
+
+}
+output "GET_ALL_APIS_FOR_RESOURCE_LAMBDA_NAME"{
+  value = aws_lambda_function.lambda_get_all_apis_for_resource_function.function_name
+
+}
+

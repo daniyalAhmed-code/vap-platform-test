@@ -29,10 +29,10 @@ exports.handler = async (req, res) => {
           'string.base': `"phone number" should be a type of 'text'`,
           'string.empty': `"phone number" cannot be an empty field`,
           'string.min': `"phone number" should have a minimum length of 9`,
-          'string.pattern.base': "valid patterns are (123) 456-7890,(123)456-7890,123-456-7890,123.456.7890,1234567890,+31636363634,075-63546725",
+          'string.pattern.base': "valid patterns are +31636363634",
           'any.required': `"phone number" is a required field`
         }),
-        targetKeyRotationEnabled: Joi.boolean(),
+        targetKeyRotationEnabled: Joi.boolean().default(false),
         targetMfa: Joi.boolean().required(),
         
         targetCallBackUrl: Joi.string().required().messages({
@@ -80,7 +80,7 @@ exports.handler = async (req, res) => {
       console.log(body.error)
     
       if ('error' in body) {
-        return rh.callbackRespondWithSimpleMessage(400,'Invalid value for "targetEmailAddress" parameter.')
+        return rh.callbackRespondWithSimpleMessage(400,body.error.details[0].message)
               }
     
       if (typeof targetEmailAddress !== 'string' || targetEmailAddress === '') {

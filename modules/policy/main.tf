@@ -104,7 +104,7 @@ resource "aws_iam_policy" "lambda_backend_policy" {
           "logs:CreateLogStream",
           "logs:PutLogEvents"
         ],
-        "Resource": "arn:aws:logs:${var.AWS_REGION}:${var.CURRENT_ACCOUNT_ID}:log-group:/aws/lambda/${var.BACKEND_LAMBDA_NAME}:*"
+        "Resource": "arn:aws:logs:${var.AWS_REGION}:${var.CURRENT_ACCOUNT_ID}:log-group:/aws/lambda/*"
         
     },
     {
@@ -154,7 +154,8 @@ resource "aws_iam_policy" "lambda_backend_policy" {
         "arn:aws:dynamodb:${var.AWS_REGION}:${var.CURRENT_ACCOUNT_ID}:table/${var.CUSTOMER_TABLE_NAME}",
         "${var.PRE_LOGIN_TABLE_ARN}",
         "${var.API_ROLE_PERMISSION_TABLE_ARN}",
-        "${var.API_PERMISSION_TABLE_ARN}"
+        "${var.API_PERMISSION_TABLE_ARN}",
+        "${var.MNO_THIRD_PARTY_RESOURCE_TABLE_ARN}"
         
       ]
     },
@@ -184,15 +185,21 @@ resource "aws_iam_policy" "lambda_backend_policy" {
         "cognito-idp:AdminUpdateUserAttributes",
         "cognito-idp:AdminAddUserToGroup"
       ],
-      "Resource": "${var.COGNITO_USER_POOL}"
-    
+      "Resource": [
+          "arn:aws:cognito-idp:${var.AWS_REGION}:${var.CURRENT_ACCOUNT_ID}:userpool/${var.USERPOOL_ID}",
+          "arn:aws:cognito-idp:${var.AWS_REGION}:${var.CURRENT_ACCOUNT_ID}:userpool/*"
+      ]
+        
 },
 {
       "Effect": "Allow",
       "Action": [
         "lambda:InvokeFunction"
       ],
-      "Resource": "${var.CATALOG_UPDATER_LAMBDA_ARN}"
+      "Resource": ["arn:aws:cognito-idp:${var.AWS_REGION}:${var.CURRENT_ACCOUNT_ID}:userpool/${var.USERPOOL_ID}",
+      "arn:aws:cognito-idp:${var.AWS_REGION}:${var.CURRENT_ACCOUNT_ID}:userpool/${var.MNO_USERPOOL_ID}",
+      "arn:aws:cognito-idp:${var.AWS_REGION}:${var.CURRENT_ACCOUNT_ID}:userpool/${var.THIRD_PARTY_USERPOOL_ID}"
+      ]
 
 },
 {
@@ -240,7 +247,7 @@ resource "aws_iam_policy" "lambda_asset_uploader_policy" {
             "logs:CreateLogStream",
             "logs:PutLogEvents"
          ],
-         "Resource": "arn:aws:logs:${var.AWS_REGION}:${var.CURRENT_ACCOUNT_ID}:log-group:/aws/lambda/${var.BACKEND_LAMBDA_NAME}:*"
+         "Resource": "arn:aws:logs:${var.AWS_REGION}:${var.CURRENT_ACCOUNT_ID}:log-group:/aws/lambda/*"
       },
       {
          "Effect":"Allow",

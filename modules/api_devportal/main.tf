@@ -37,6 +37,12 @@ resource "aws_api_gateway_resource" "version_number_resource" {
 }
 
 
+resource "aws_api_gateway_resource" "admin_account_client" {
+  rest_api_id = aws_api_gateway_rest_api.api-gateway.id
+  parent_id   = aws_api_gateway_rest_api.api-gateway.root_resource_id
+  path_part   = "client"
+}
+
 
 module "version_resource_OPTION" {
   source                          = "./methods"
@@ -284,14 +290,14 @@ resource "aws_api_gateway_resource" "admin_resource" {
 
 resource "aws_api_gateway_resource" "apipermission_resource" {
   rest_api_id = aws_api_gateway_rest_api.api-gateway.id
-  parent_id   = aws_api_gateway_rest_api.api-gateway.root_resource_id
+  parent_id   = aws_api_gateway_resource.admin_account_client.id
   path_part   = "api_permission"
 }
 
 resource "aws_api_gateway_resource" "apipermission_resourcename_resource" {
   rest_api_id = aws_api_gateway_rest_api.api-gateway.id
   parent_id   = aws_api_gateway_resource.apipermission_resource.id
-  path_part   = "{ResourceName}"
+  path_part   = "{id}"
 }
 
 
@@ -310,14 +316,64 @@ resource "aws_api_gateway_resource" "admin_account_resource" {
 resource "aws_api_gateway_resource" "admin_account_mno_resource" {
   rest_api_id = aws_api_gateway_rest_api.api-gateway.id
   parent_id   = aws_api_gateway_resource.admin_resource.id
+  path_part   = "resource"
+}
+
+resource "aws_api_gateway_resource" "admin_account_mno_resourcetype_resource" {
+  rest_api_id = aws_api_gateway_rest_api.api-gateway.id
+  parent_id   = aws_api_gateway_resource.admin_account_client.id
   path_part   = "mno"
 }
 
+
+resource "aws_api_gateway_resource" "admin_account_third_party_resourcetype_resource" {
+  rest_api_id = aws_api_gateway_rest_api.api-gateway.id
+  parent_id   = aws_api_gateway_resource.admin_account_client.id
+  path_part   = "thirdparty"
+}
+
+
+resource "aws_api_gateway_resource" "admin_account_third_party_id_resource" {
+  rest_api_id = aws_api_gateway_rest_api.api-gateway.id
+  parent_id   = aws_api_gateway_resource.admin_account_third_party_resourcetype_resource.id
+  path_part   = "{id}"
+}
+
+
+resource "aws_api_gateway_resource" "admin_account_mno_user_resource" {
+  rest_api_id = aws_api_gateway_rest_api.api-gateway.id
+  parent_id   = aws_api_gateway_resource.admin_account_mno_resourcetype_resource.id
+  path_part   = "user"
+}
+
+resource "aws_api_gateway_resource" "admin_account_third_party_user_resource" {
+  rest_api_id = aws_api_gateway_rest_api.api-gateway.id
+  parent_id   = aws_api_gateway_resource.admin_account_third_party_resourcetype_resource.id
+  path_part   = "user"
+}
+
+
 resource "aws_api_gateway_resource" "admin_account_mno_resourceid_resource" {
   rest_api_id = aws_api_gateway_rest_api.api-gateway.id
-  parent_id   = aws_api_gateway_resource.admin_resource.id
-  path_part   = "{ResourceId}"
+  parent_id   = aws_api_gateway_resource.admin_account_mno_user_resource.id
+  path_part   = "{id}"
 }
+
+
+resource "aws_api_gateway_resource" "admin_account_third_party_resourceid_resource" {
+  rest_api_id = aws_api_gateway_rest_api.api-gateway.id
+  parent_id   = aws_api_gateway_resource.admin_account_third_party_user_resource.id
+  path_part   = "{id}"
+}
+
+
+resource "aws_api_gateway_resource" "admin_account_mno_id_resource" {
+  rest_api_id = aws_api_gateway_rest_api.api-gateway.id
+  parent_id   = aws_api_gateway_resource.admin_account_mno_resourcetype_resource.id
+  path_part   = "{id}"
+}
+
+
 
 resource "aws_api_gateway_resource" "admin_account_callback_auth_resource" {
   rest_api_id = aws_api_gateway_rest_api.api-gateway.id
@@ -389,6 +445,194 @@ resource "aws_api_gateway_resource" "admin_catalog_id_resource" {
 //usageplan here
 
 
+
+module "Mno_resourcetype_OPTION" {
+  source                          = "./methods"
+  METHOD_VALUE                    = ""
+  API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
+  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_mno_resourcetype_resource.id
+  INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
+  METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
+  HTTP_METHOD                     = "OPTIONS"
+  
+  AUTHORIZATION                   = "NONE"
+  CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
+  AWS_REGION                      = var.AWS_REGION
+}
+
+module "Mno_resourcetype_GET" {
+  source                          = "./methods"
+  METHOD_VALUE                    = ""
+  API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
+  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_mno_user_resource.id
+  INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
+  METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
+  HTTP_METHOD                     = "GET"
+  FUNCTION_NAME                   = var.GET_MNO_RESOURCES_USERS_ACCOUNTS_LAMBDA_NAME
+  AUTHORIZATION = "${var.AUTHORIZATION}"
+  AUTHORIZER_ID = "${var.AUTHORIZATION == "CUSTOM" ? "${aws_api_gateway_authorizer.lambda_developer_portal_authorizer[0].id}" : ""}"
+  LAMBDA_URI                      = var.LAMBDA_GET_MNO_RESOURCES_USERS_ACCOUNTS_INVOKE_ARN
+  CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
+  AWS_REGION                      = var.AWS_REGION
+}
+
+
+module "Mno_resource_type_OPTION" {
+  source                          = "./methods"
+  METHOD_VALUE                    = ""
+  API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
+  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_mno_user_resource.id
+  INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
+  METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
+  HTTP_METHOD                     = "OPTIONS"
+  AUTHORIZATION = "NONE"
+  CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
+  AWS_REGION                      = var.AWS_REGION
+}
+
+
+
+module "Mno_resource_type_GET" {
+  source                          = "./methods"
+  METHOD_VALUE                    = ""
+  API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
+  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_mno_resourcetype_resource.id
+  INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
+  METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
+  HTTP_METHOD                     = "GET"
+  FUNCTION_NAME                   = var.GET_MNO_RESOURCE_BY_TYPE_LAMBDA_NAME
+  AUTHORIZATION = "${var.AUTHORIZATION}"
+  AUTHORIZER_ID = "${var.AUTHORIZATION == "CUSTOM" ? "${aws_api_gateway_authorizer.lambda_developer_portal_authorizer[0].id}" : ""}"
+  CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
+  AWS_REGION                      = var.AWS_REGION
+  LAMBDA_URI                      = var.LAMBDA_GET_MNO_RESOURCE_BY_TYPE_INVOKE_ARN
+}
+
+module "Mno_resource_type_POST" {
+  source                          = "./methods"
+  METHOD_VALUE                    = ""
+  API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
+  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_mno_user_resource.id
+  INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
+  METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
+  HTTP_METHOD                     = "POST"
+  FUNCTION_NAME                   = var.CREATE_MNO_RESOURCE_USER_LAMBDA_NAME
+  AUTHORIZATION = "${var.AUTHORIZATION}"
+  AUTHORIZER_ID = "${var.AUTHORIZATION == "CUSTOM" ? "${aws_api_gateway_authorizer.lambda_developer_portal_authorizer[0].id}" : ""}"
+  CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
+  AWS_REGION                      = var.AWS_REGION
+  LAMBDA_URI                      = var.LAMBDA_CREATE_MNO_RESOURCE_USER_INVOKE_ARN
+}
+
+module "Mno_resource_type_DELETE" {
+  source                          = "./methods"
+  METHOD_VALUE                    = ""
+  API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
+  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_mno_resourceid_resource.id
+  INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
+  METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
+  HTTP_METHOD                     = "DELETE"
+  FUNCTION_NAME                   = var.DELETE_MNO_RESOURCE_USER_LAMBDA_NAME
+  AUTHORIZATION = "${var.AUTHORIZATION}"
+  AUTHORIZER_ID = "${var.AUTHORIZATION == "CUSTOM" ? "${aws_api_gateway_authorizer.lambda_developer_portal_authorizer[0].id}" : ""}"
+  CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
+  AWS_REGION                      = var.AWS_REGION
+  LAMBDA_URI                      = var.LAMBDA_DELETE_MNO_RESOURCE_USER_INVOKE_ARN
+}
+
+module "Third_Party_resourcetype_OPTION" {
+  source                          = "./methods"
+  METHOD_VALUE                    = ""
+  API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
+  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_third_party_user_resource.id
+  INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
+  METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
+  HTTP_METHOD                     = "OPTIONS"
+  AUTHORIZATION = "NONE"
+  CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
+  AWS_REGION                      = var.AWS_REGION
+}
+
+
+module "Third_Party_resourcetype_GET" {
+  source                          = "./methods"
+  METHOD_VALUE                    = ""
+  API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
+  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_third_party_user_resource.id
+  INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
+  METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
+  HTTP_METHOD                     = "GET"
+  FUNCTION_NAME                   = var.GET_THIRD_PARTY_RESOURCES_USERS_ACCOUNTS_LAMBDA_NAME
+  AUTHORIZATION = "${var.AUTHORIZATION}"
+  AUTHORIZER_ID = "${var.AUTHORIZATION == "CUSTOM" ? "${aws_api_gateway_authorizer.lambda_developer_portal_authorizer[0].id}" : ""}"
+  LAMBDA_URI                      = var.LAMBDA_GET_THIRD_PARTY_RESOURCES_USERS_ACCOUNTS_INVOKE_ARN
+  CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
+  AWS_REGION                      = var.AWS_REGION
+}
+
+module "Third_Party_resource_type_GET" {
+  source                          = "./methods"
+  METHOD_VALUE                    = ""
+  API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
+  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_third_party_resourcetype_resource.id
+  INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
+  METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
+  HTTP_METHOD                     = "GET"
+  FUNCTION_NAME                   = var.GET_THIRD_PARTY_RESOURCE_BY_TYPE_LAMBDA_NAME
+  AUTHORIZATION = "${var.AUTHORIZATION}"
+  AUTHORIZER_ID = "${var.AUTHORIZATION == "CUSTOM" ? "${aws_api_gateway_authorizer.lambda_developer_portal_authorizer[0].id}" : ""}"
+  CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
+  AWS_REGION                      = var.AWS_REGION
+  LAMBDA_URI                      = var.LAMBDA_GET_THIRD_PARTY_RESOURCE_BY_TYPE_INVOKE_ARN
+}
+
+module "Third_Party_resource_type_OPTION" {
+  source                          = "./methods"
+  METHOD_VALUE                    = ""
+  API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
+  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_third_party_resourcetype_resource.id
+  INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
+  METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
+  HTTP_METHOD                     = "OPTIONS"
+  AUTHORIZATION = "NONE"
+  CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
+  AWS_REGION                      = var.AWS_REGION
+}
+
+module "Third_Party_resource_type_POST" {
+  source                          = "./methods"
+  METHOD_VALUE                    = ""
+  API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
+  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_third_party_user_resource.id
+  INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
+  METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
+  HTTP_METHOD                     = "POST"
+  FUNCTION_NAME                   = var.CREATE_THIRD_PARTY_RESOURCE_USER_LAMBDA_NAME
+  AUTHORIZATION = "${var.AUTHORIZATION}"
+  AUTHORIZER_ID = "${var.AUTHORIZATION == "CUSTOM" ? "${aws_api_gateway_authorizer.lambda_developer_portal_authorizer[0].id}" : ""}"
+  CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
+  AWS_REGION                      = var.AWS_REGION
+  LAMBDA_URI                      = var.LAMBDA_THIRD_PARTY_RESOURCE_USER_INVOKE_ARN
+}
+
+module "Third_Party_resource_type_DELETE" {
+  source                          = "./methods"
+  METHOD_VALUE                    = ""
+  API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
+  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_third_party_resourceid_resource.id
+  INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
+  METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
+  HTTP_METHOD                     = "DELETE"
+  FUNCTION_NAME                   = var.DELETE_THIRD_PARTY_RESOURCE_USER_LAMBDA_NAME
+  AUTHORIZATION = "${var.AUTHORIZATION}"
+  AUTHORIZER_ID = "${var.AUTHORIZATION == "CUSTOM" ? "${aws_api_gateway_authorizer.lambda_developer_portal_authorizer[0].id}" : ""}"
+  CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
+  AWS_REGION                      = var.AWS_REGION
+  LAMBDA_URI                      = var.LAMBDA_DELETE_THIRD_PARTY_RESOURCE_USER_INVOKE_ARN
+}
+
+
+
 module "apipermission_resource_OPTION" {
   source                          = "./methods"
   METHOD_VALUE                    = ""
@@ -437,7 +681,7 @@ module "apipermission_resource_GET" {
   source                          = "./methods"
   METHOD_VALUE                    = ""
   API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
-  RESOURCE_ID                     = aws_api_gateway_resource.apipermission_resource.id
+  RESOURCE_ID                     = aws_api_gateway_resource.apipermission_resourcename_resource.id
   INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
   METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
   HTTP_METHOD                     = "GET"
@@ -461,7 +705,7 @@ module "apipermission_resource_PUT" {
   AUTHORIZER_ID = "${var.AUTHORIZATION == "CUSTOM" ? "${aws_api_gateway_authorizer.lambda_developer_portal_authorizer[0].id}" : ""}"
   CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
   AWS_REGION                      = var.AWS_REGION
-  LAMBDA_URI                      = var.LAMBDA_DELETE_ALLOWED_APIS_FOR_RESOURCE_INVOKE_ARN
+  LAMBDA_URI                      = var.LAMBDA_UPDATE_PERMISION_FOR_API_INVOKE_ARN
 
 }
 
@@ -477,8 +721,34 @@ module "apipermission_resource_DELETE" {
   AUTHORIZER_ID = "${var.AUTHORIZATION == "CUSTOM" ? "${aws_api_gateway_authorizer.lambda_developer_portal_authorizer[0].id}" : ""}"
   CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
   AWS_REGION                      = var.AWS_REGION
-  LAMBDA_URI                      = var.LAMBDA_DELETE_ALLOWED_APIS_FOR_RESOURCE_INVOKE_ARN
+   LAMBDA_URI                      = var.LAMBDA_DELETE_ALLOWED_APIS_FOR_RESOURCE_INVOKE_ARN
+  FUNCTION_NAME                   = var.DELETE_ALLOWED_APIS_FOR_RESOURCE_LAMBDA_NAME
+
 }
+
+
+module "account_userid_put" {
+  source                          = "./methods"
+  METHOD_VALUE                    = ""
+  API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
+  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_userid_resource.id
+  INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
+  METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
+  AUTHORIZATION = "${var.AUTHORIZATION}"
+  AUTHORIZER_ID = "${var.AUTHORIZATION == "CUSTOM" ? "${aws_api_gateway_authorizer.lambda_developer_portal_authorizer[0].id}" : ""}"
+  HTTP_METHOD                     = "PUT"
+  LAMBDA_INVOKE_ARN               = var.LAMBDA_UPDATE_USER_ACCOUNT_INVOKE_ARN
+  FUNCTION_NAME                   = var.UPDATE_USER_ACCOUNT_LAMBDA_NAME
+  CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
+  AWS_REGION                      = var.AWS_REGION
+  LAMBDA_URI                      =var.LAMBDA_UPDATE_USER_ACCOUNT_INVOKE_ARN
+
+  REQUEST_TEMPLATES = {
+    "application/json" = <<EOF
+    EOF
+  }
+}
+
 
 
 
@@ -1314,7 +1584,7 @@ module "MnoResource_get" {
   source                          = "./methods"
   METHOD_VALUE                    = ""
   API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
-  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_mno_resource.id
+  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_client.id
   INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
   METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
   AUTHORIZATION = "${var.AUTHORIZATION}"
@@ -1325,19 +1595,18 @@ module "MnoResource_get" {
   FUNCTION_NAME                   = var.BACKEND_LAMBDA_NAME
   CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
   AWS_REGION                      = var.AWS_REGION
-  LAMBDA_URI                      =var.LAMBDA_CREATE_MNO_THIRD_PARTY_RESOURCE_INVOKE_ARN
+  LAMBDA_URI                      =var.LAMBDA_GET_MNO_THIRD_PARTY_RESOURCE_INVOKE_ARN
 
   REQUEST_TEMPLATES = {
     "application/json" = <<EOF
     EOF
   }
 }
-
 module "Mno_resource_OPTION" {
   source                          = "./methods"
   METHOD_VALUE                    = ""
   API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
-  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_mno_resource.id
+  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_client.id
   INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
   METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
   HTTP_METHOD                     = "OPTIONS"
@@ -1375,6 +1644,112 @@ module "Mno_resourceid_OPTION" {
   METHOD_VALUE                    = ""
   API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
   RESOURCE_ID                     = aws_api_gateway_resource.admin_account_mno_resourceid_resource.id
+  INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
+  METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
+  HTTP_METHOD                     = "OPTIONS"
+  AUTHORIZATION                   = "NONE"
+  CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
+  AWS_REGION                      = var.AWS_REGION
+}
+
+
+module "Mno_resourceid_GET" {
+  source                          = "./methods"
+  METHOD_VALUE                    = ""
+  API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
+  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_mno_resourceid_resource.id
+  INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
+  METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
+  HTTP_METHOD                     = "GET"
+  FUNCTION_NAME                   = var.GET_MNO_USER_BY_ID_LAMBDA_NAME
+  AUTHORIZATION = "${var.AUTHORIZATION}"
+  AUTHORIZER_ID = "${var.AUTHORIZATION == "CUSTOM" ? "${aws_api_gateway_authorizer.lambda_developer_portal_authorizer[0].id}" : ""}" 
+  CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
+  AWS_REGION                      = var.AWS_REGION
+  LAMBDA_URI                        =var.LAMBDA_GET_MNO_USER_BY_ID_INVOKE_ARN
+}
+
+
+module "Mno_id_GET" {
+  source                          = "./methods"
+  METHOD_VALUE                    = ""
+  API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
+  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_mno_id_resource.id
+  INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
+  METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
+  HTTP_METHOD                     = "GET"
+  FUNCTION_NAME                   = var.GET_MNO_THIRD_PARTY_RESOURCE_BY_ID_LAMBDA_NAME
+  AUTHORIZATION = "${var.AUTHORIZATION}"
+  AUTHORIZER_ID = "${var.AUTHORIZATION == "CUSTOM" ? "${aws_api_gateway_authorizer.lambda_developer_portal_authorizer[0].id}" : ""}" 
+  CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
+  AWS_REGION                      = var.AWS_REGION
+  LAMBDA_URI                        =var.LAMBDA_GET_MNO_THIRD_PARTY_RESOURCE_BY_ID_INVOKE_ARN
+}
+
+module "Mno_id_OPTIONS" {
+  source                          = "./methods"
+  METHOD_VALUE                    = ""
+  API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
+  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_mno_id_resource.id
+  INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
+  METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
+  HTTP_METHOD                     = "OPTIONS"
+  AUTHORIZATION                   = "NONE"
+  CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
+  AWS_REGION                      = var.AWS_REGION
+}
+
+
+module "Third_party_resourceid_OPTION" {
+  source                          = "./methods"
+  METHOD_VALUE                    = ""
+  API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
+  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_third_party_resourceid_resource.id
+  INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
+  METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
+  HTTP_METHOD                     = "OPTIONS"
+  
+  AUTHORIZATION                   = "NONE"
+  CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
+  AWS_REGION                      = var.AWS_REGION
+}
+
+
+module "Third_party_resourceid_GET" {
+  source                          = "./methods"
+  METHOD_VALUE                    = ""
+  API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
+  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_third_party_resourceid_resource.id
+  INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
+  METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
+  HTTP_METHOD                     = "GET"
+  FUNCTION_NAME                   = var.GET_THIRD_PARTY_USER_BY_ID_LAMBDA_NAME
+  AUTHORIZATION = "${var.AUTHORIZATION}"
+  AUTHORIZER_ID = "${var.AUTHORIZATION == "CUSTOM" ? "${aws_api_gateway_authorizer.lambda_developer_portal_authorizer[0].id}" : ""}" 
+  CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
+  AWS_REGION                      = var.AWS_REGION
+  LAMBDA_URI                        =var.LAMBDA_GET_THIRD_PARTY_USER_BY_ID_INVOKE_ARN
+}
+module "ThirdParty_id_GET" {
+  source                          = "./methods"
+  METHOD_VALUE                    = ""
+  API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
+  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_third_party_id_resource.id
+  INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
+  METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
+  HTTP_METHOD                     = "GET"
+  FUNCTION_NAME                   = var.GET_MNO_THIRD_PARTY_RESOURCE_BY_ID_LAMBDA_NAME
+  AUTHORIZATION = "${var.AUTHORIZATION}"
+  AUTHORIZER_ID = "${var.AUTHORIZATION == "CUSTOM" ? "${aws_api_gateway_authorizer.lambda_developer_portal_authorizer[0].id}" : ""}" 
+  CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
+  AWS_REGION                      = var.AWS_REGION
+  LAMBDA_URI                        =var.LAMBDA_GET_MNO_THIRD_PARTY_RESOURCE_BY_ID_INVOKE_ARN
+}
+module "ThirdParty_id_OPTION" {
+  source                          = "./methods"
+  METHOD_VALUE                    = ""
+  API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
+  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_third_party_id_resource.id
   INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
   METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
   HTTP_METHOD                     = "OPTIONS"
@@ -1848,3 +2223,79 @@ resource "aws_lambda_permission" "lambda_developer_portal_authorizer_permission"
   principal     = "apigateway.amazonaws.com"
   source_arn    = "arn:aws:execute-api:${var.AWS_REGION}:${var.CURRENT_ACCOUNT_ID}:*"
 }
+
+
+resource "aws_lambda_permission" "get_mno_resource_lambda_permission" {
+  function_name = var.GET_MNO_RESOURCE_BY_TYPE_LAMBDA_NAME
+  statement_id  = "GET_MNO_RESOURCE_BY_TYPE_LAMBDA_PERMISSION"
+  action        = "lambda:InvokeFunction"
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api-gateway.execution_arn}/*/*/*"
+}
+
+
+resource "aws_lambda_permission" "get_mno_users_account_lambda_permission" {
+  function_name = var.GET_MNO_RESOURCES_USERS_ACCOUNTS_LAMBDA_NAME
+  statement_id  = "GET_MNO_RESOURCES_USERS_ACCOUNTS_LAMBDA_PERMISSION"
+  action        = "lambda:InvokeFunction"
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api-gateway.execution_arn}/*/*/*"
+}
+
+resource "aws_lambda_permission" "create_mno_resource_lambda_permission" {
+  function_name = var.CREATE_MNO_RESOURCE_USER_LAMBDA_NAME
+  statement_id  = "CREATE_MNO_RESOURCE_USER_LAMBDA_PERMISSION"
+  action        = "lambda:InvokeFunction"
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api-gateway.execution_arn}/*/*/*"
+}
+
+resource "aws_lambda_permission" "delete_mno_resource_user_account_lambda_permission" {
+  function_name = var.DELETE_MNO_RESOURCE_USER_LAMBDA_NAME
+  statement_id  = "DELETE_MNO_RESOURCE_USER_LAMBDA_PERMISSION"
+  action        = "lambda:InvokeFunction"
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api-gateway.execution_arn}/*/*/*"
+}
+
+resource "aws_lambda_permission" "get_third_party_resources_users_account_lambda_permission" {
+  function_name = var.GET_THIRD_PARTY_RESOURCES_USERS_ACCOUNTS_LAMBDA_NAME
+  statement_id  = "GET_THIRD_PARTY_RESOURCES_USERS_ACCOUNTS_LAMBDA_PERMISSION"
+  action        = "lambda:InvokeFunction"
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api-gateway.execution_arn}/*/*/*"
+}
+
+
+resource "aws_lambda_permission" "get_third_party_resources_by_type_lambda_permission" {
+  function_name = var.GET_THIRD_PARTY_RESOURCE_BY_TYPE_LAMBDA_NAME
+  statement_id  = "GET_THIRD_PARTY_RESOURCE_BY_TYPE_LAMBDA_PERMISSION"
+  action        = "lambda:InvokeFunction"
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api-gateway.execution_arn}/*/*/*"
+}
+
+
+resource "aws_lambda_permission" "delete_third_party_resources_by_type_lambda_permission" {
+  function_name = var.DELETE_THIRD_PARTY_RESOURCE_USER_LAMBDA_NAME
+  statement_id  = "DELETE_THIRD_PARTY_RESOURCE_USER_LAMBDA_PERMISSION"
+  action        = "lambda:InvokeFunction"
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api-gateway.execution_arn}/*/*/*"
+}
+resource "aws_lambda_permission" "get_mno_user_by_id_lambda_permission" {
+  function_name = var.GET_MNO_USER_BY_ID_LAMBDA_NAME
+  statement_id  = "GET_MNO_USER_BY_ID_LAMBDA_PERMISSION"
+  action        = "lambda:InvokeFunction"
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api-gateway.execution_arn}/*/*/*"
+}
+
+resource "aws_lambda_permission" "update_third_party_resources_by_type_lambda_permission" {
+  function_name = var.UPDATE_PERMISION_FOR_API_LAMBDA_NAME
+  statement_id  = "UPDATE_PERMISION_FOR_API_LAMBDA_PERMISSION"
+  action        = "lambda:InvokeFunction"
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api-gateway.execution_arn}/*/*/*"
+}
+

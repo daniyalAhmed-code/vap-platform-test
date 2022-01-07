@@ -209,8 +209,8 @@ async function handler (event, context) {
   while (true) {
     const listObjectsResult = await exports.s3.listObjectsV2(
       token != null
-        ? { Bucket: bucketName, Prefix: `catalog/${sdkGenerationKey}`, ContinuationToken: token }
-        : { Bucket: bucketName, Prefix: `catalog/${sdkGenerationKey}` }
+        ? { Bucket: bucketName, Prefix: `catalog/`, ContinuationToken: token }
+        : { Bucket: bucketName, Prefix: `catalog/` }
     ).promise()
 
     for (const file of listObjectsResult.Contents) {

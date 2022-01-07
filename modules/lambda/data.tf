@@ -276,3 +276,83 @@ data "archive_file" "lambda_developer_portal_authoriser_function" {
   source_dir  = "${path.module}/code/developer-portal-authoriser"
   output_path = "${path.module}/zip/developer-portal-authoriser.zip"
 }
+
+data "archive_file" "lambda_get_mno_third_party_resource_by_id_function" {
+  type        = "zip"
+  source_dir  = "${path.module}/code/get-mno-third-party-resources-by-id"
+  output_path = "${path.module}/zip/get-mno-third-party-resources-by-id.zip"
+}
+
+data "archive_file" "lambda_get_mno_resource_users_account_function" {
+  type        = "zip"
+  source_dir  = "${path.module}/code/get-mno-resource-users-accounts"
+  output_path = "${path.module}/zip/get-mno-resource-users-accounts.zip"
+}
+
+data "archive_file" "lambda_get_third_party_resource_users_account_function" {
+  type        = "zip"
+  source_dir  = "${path.module}/code/get-third-party-resource-users-accounts"
+  output_path = "${path.module}/zip/get-third-party-resource-users-accounts.zip"
+}
+
+data "archive_file" "lambda_get_mno_resources_by_type_function" {
+  type        = "zip"
+  source_dir  = "${path.module}/code/get-mno-resources-by-type"
+  output_path = "${path.module}/zip/get-mno-resources-by-type.zip"
+}
+
+data "archive_file" "lambda_get_third_party_resources_by_type_function" {
+  type        = "zip"
+  source_dir  = "${path.module}/code/get-third-party-resources-by-type"
+  output_path = "${path.module}/zip/get-third-party-resources-by-type.zip"
+}
+
+data "archive_file" "lambda_get_third_party_user_by_id_function" {
+  type        = "zip"
+  source_dir  = "${path.module}/code/get-third-party-user-by-id"
+  output_path = "${path.module}/zip/get-third-party-user-by-id.zip"
+}
+
+data "archive_file" "lambda_get_mno_user_by_id_function" {
+  type        = "zip"
+  source_dir  = "${path.module}/code/get-mno-user-by-id"
+  output_path = "${path.module}/zip/get-mno-user-by-id.zip"
+}
+
+
+data "archive_file" "lambda_create_mno_resource_user_function" {
+  type        = "zip"
+  source_dir  = "${path.module}/code/create-mno-resource-user"
+  output_path = "${path.module}/zip/create-mno-resource-user.zip"
+}
+
+data "archive_file" "lambda_create_third_party_resource_user_function" {
+  type        = "zip"
+  source_dir  = "${path.module}/code/create-third-party-resource-user"
+  output_path = "${path.module}/zip/create-third-party-resource-user.zip"
+}
+
+
+data "archive_file" "lambda_delete_mno_resource_user_function" {
+  type        = "zip"
+  source_dir  = "${path.module}/code/delete-mno-resource-user"
+  output_path = "${path.module}/zip/delete-mno-resource-user.zip"
+}
+
+data "archive_file" "lambda_delete_third_party_resource_user_function" {
+  type        = "zip"
+  source_dir  = "${path.module}/code/delete-third-party-resource-user"
+  output_path = "${path.module}/zip/delete-third-party-resource-user.zip"
+}
+
+data "archive_file" "lambda_update_user_account_function" {
+  type        = "zip"
+  source_dir  = "${path.module}/code/update-user-account"
+  output_path = "${path.module}/zip/update-user-account.zip"
+}
+
+data "archive_file" "lambda_get_all_apis_permissions_for_resource_function" {
+  type        = "zip"
+  source_dir  = "${path.module}/code/get-all-apis-permissions-for-resources"
+  output_path = "${path.module}/zip/get-all-apis-permissions-for-resources.zip"
+}

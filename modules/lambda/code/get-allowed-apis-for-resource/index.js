@@ -15,10 +15,8 @@ exports.handler = async (req, res) => {
     
     if(typeof req.body == "string")
     req['body'] = JSON.parse(req.body)
-    let ResourceName = req.pathParameters.ResourceName
+    let ClientId = req.pathParameters.id
    
-    const UsagePlanPermission = await customersController.getAllowedApisForResource(
-    ResourceName,
-    )
+    const UsagePlanPermission = await customersController.getAllowedApisForResource(ClientId)
     return rh.callbackRespondWithJsonBody(200,UsagePlanPermission)
 }   

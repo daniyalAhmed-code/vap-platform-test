@@ -11,7 +11,7 @@ exports.handler = async (req, res) => {
     
     if(typeof req.pathParameters == "string")
         req['pathParameters'] = JSON.parse(req.pathParameters)
-    let ResourceId = req.pathParameters.ResourceId
+    let ResourceId = req.pathParameters.id
    
     const UsagePlanPermission = await customersController.deleteAllowedApisForResource(ResourceId)
     return rh.callbackRespondWithJsonBody(200,UsagePlanPermission)

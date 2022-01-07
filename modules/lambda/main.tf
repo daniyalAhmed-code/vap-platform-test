@@ -21,7 +21,9 @@ resource "aws_lambda_function" "lambda_catalog_updater_lambda_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
-
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "BucketName" = "${var.ARTIFACTS_S3_BUCKET_NAME}"
@@ -39,6 +41,9 @@ resource "aws_lambda_function" "lambda_backend_lambda_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -69,6 +74,9 @@ resource "aws_lambda_function" "lambda_cognito_presignup_trigger_function" {
   runtime          = "nodejs12.x"
   timeout          = "3"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "AccountRegistrationMode" = "${var.ACCOUNT_REGISTRATION_MODE}"
@@ -86,6 +94,9 @@ resource "aws_lambda_function" "lambda_cognito_post_confirmation_trigger_functio
   runtime          = "nodejs12.x"
   timeout          = "3"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "AccountRegistrationMode"   = "${var.ACCOUNT_REGISTRATION_MODE}"
@@ -105,6 +116,9 @@ resource "aws_lambda_function" "lambda_cognito_post_authentication_trigger_funct
   runtime          = "nodejs12.x"
   timeout          = "3"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "AccountRegistrationMode"   = "${var.ACCOUNT_REGISTRATION_MODE}"
@@ -151,6 +165,9 @@ resource "aws_lambda_function" "lambda_dump_v3_account_data_function" {
   runtime          = "nodejs12.x"
   timeout          = "300"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+ tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "UserPoolId"         = "${var.USERPOOL_ID}"
@@ -171,6 +188,9 @@ resource "aws_lambda_function" "lambda_user_group_importer_function" {
   runtime          = "nodejs12.x"
   timeout          = "900"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "UserPoolId"          = "${var.USERPOOL_ID}"
@@ -232,6 +252,9 @@ resource "aws_lambda_function" "lambda_api_key_rotation" {
   runtime          = "nodejs12.x"
   timeout          = "900"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "InvokeLambdaFunction" = "${var.RESOURCE_PREFIX}-invoke-api-key-rotation"
@@ -251,6 +274,9 @@ resource "aws_lambda_function" "lambda_invoke_api_key_rotation" {
   runtime          = "nodejs12.x"
   timeout          = "900"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "CustomersTableName" = "${var.CUSTOMER_TABLE_NAME}"
@@ -273,14 +299,14 @@ resource "aws_s3_bucket_object" "upload_config_to_s3" {
   source_hash  =  md5(local.s3_config_rendered_content)
 }
 
- resource "aws_s3_bucket_object" "upload_sdkGeneration_to_s3" {
-   provider            = aws.src
-   bucket       = "${var.ARTIFACTS_S3_BUCKET_NAME}"
-   key          = "sdkGeneration.json"
-   content      = "${local.s3_sdkGeneration_rendered_content}"
-   content_type = "application/json"
-   source_hash  =  md5(local.s3_sdkGeneration_rendered_content)
- }
+resource "aws_s3_bucket_object" "upload_sdkGeneration_to_s3" {
+  provider            = aws.src
+  bucket       = "${var.ARTIFACTS_S3_BUCKET_NAME}"
+  key          = "sdkGeneration.json"
+  content      = "${local.s3_sdkGeneration_rendered_content}"
+  content_type = "application/json"
+  source_hash  =  md5(local.s3_sdkGeneration_rendered_content)
+}
 
  resource "aws_s3_bucket_object" "upload_catalog_to_s3" {
    provider            = aws.src
@@ -345,6 +371,9 @@ resource "aws_lambda_function" "lambda_get_catalog_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -373,6 +402,9 @@ resource "aws_lambda_function" "lambda_get_apikey_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -402,6 +434,9 @@ resource "aws_lambda_function" "lambda_get_subscription_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -430,6 +465,9 @@ resource "aws_lambda_function" "lambda_update_subscription_usageplan_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -459,6 +497,9 @@ resource "aws_lambda_function" "lambda_delete_subscription_usageplan_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -487,6 +528,9 @@ resource "aws_lambda_function" "lambda_get_subscription_usageplan_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -516,6 +560,9 @@ resource "aws_lambda_function" "lambda_get_feedback_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -544,6 +591,9 @@ resource "aws_lambda_function" "lambda_post_feedback_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -572,6 +622,9 @@ resource "aws_lambda_function" "lambda_get_sdk_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -600,6 +653,9 @@ resource "aws_lambda_function" "lambda_export_api_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -628,6 +684,9 @@ resource "aws_lambda_function" "lambda_update_sdkgeneration_in_catalog_function"
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -656,6 +715,9 @@ resource "aws_lambda_function" "lambda_delete_sdkgeneration_from_catalog_functio
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -683,6 +745,9 @@ resource "aws_lambda_function" "lambda_get_all_catalogs_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -711,6 +776,9 @@ resource "aws_lambda_function" "lambda_add_new_api_to_catalog_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -739,6 +807,9 @@ resource "aws_lambda_function" "lambda_delete_api_from_catalog_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -767,6 +838,9 @@ resource "aws_lambda_function" "lambda_get_all_accounts_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -795,6 +869,9 @@ resource "aws_lambda_function" "lambda_create_new_account_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -823,6 +900,9 @@ resource "aws_lambda_function" "lambda_promote_user_to_admin_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -851,6 +931,9 @@ resource "aws_lambda_function" "lambda_delete_user_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -880,6 +963,9 @@ resource "aws_lambda_function" "lambda_get_user_callbackauth_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+ tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -908,6 +994,9 @@ resource "aws_lambda_function" "lambda_resend_invite_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -937,6 +1026,9 @@ resource "aws_lambda_function" "lambda_get_current_user_profile_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -966,6 +1058,9 @@ resource "aws_lambda_function" "lambda_update_user_profile_image_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -995,6 +1090,9 @@ resource "aws_lambda_function" "lambda_get_user_profile_image_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -1025,6 +1123,9 @@ resource "aws_lambda_function" "lambda_create_mno_third_party_resources_function
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -1058,6 +1159,9 @@ resource "aws_lambda_function" "lambda_get_mno_third_party_resources_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
       "NODE_ENV"                  = "${var.NODE_ENV}"
@@ -1071,6 +1175,7 @@ resource "aws_lambda_function" "lambda_get_mno_third_party_resources_function" {
       "AdminsGroupName"           = "${var.ADMIN_GROUP_NAME}"
       "RegisteredGroupName"       = "${var.REGISTERED_GROUP_NAME}"
       "DevelopmentMode"           = "${var.DEVELOPMENT_MODE}"
+      "MnoThirdPartyResourceTableName" = "${var.MNO_THIRD_PARTY_RESOURCE_TABLE_NAME}"
       "CatalogUpdaterFunctionArn" = aws_lambda_function.lambda_catalog_updater_lambda_function.arn
 
     }
@@ -1087,9 +1192,12 @@ resource "aws_lambda_function" "lambda_create_permissions_for_api_function" {
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
-      "UsagePlanTableName"        = "${var.CUSTOMER_TABLE_NAME}"
+      "ApiPermissionTableName"    = "${var.API_PERMISSION_TABLE_NAME}"
       "UserPoolId"                = "${var.USERPOOL_ID}"
     }
   }
@@ -1107,7 +1215,7 @@ resource "aws_lambda_function" "lambda_get_allowed_apis_for_resource_function" {
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
   environment {
     variables = {
-      "UsagePlanTableName"        = "${var.CUSTOMER_TABLE_NAME}"
+      "ApiPermissionTableName"    = "${var.API_PERMISSION_TABLE_NAME}"
       "UserPoolId"                = "${var.USERPOOL_ID}"
     }
   }
@@ -1122,9 +1230,12 @@ resource "aws_lambda_function" "lambda_delete_allowed_api_for_resource_function"
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
-      "UsagePlanTableName"        = "${var.CUSTOMER_TABLE_NAME}"
+      "ApiPermissionTableName"    = "${var.API_PERMISSION_TABLE_NAME}"
       "UserPoolId"                = "${var.USERPOOL_ID}"
     }
   }
@@ -1140,9 +1251,12 @@ resource "aws_lambda_function" "lambda_update_allowed_api_for_resource_function"
   runtime          = "nodejs12.x"
   timeout          = "20"
   layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
   environment {
     variables = {
-      "UsagePlanTableName"        = "${var.CUSTOMER_TABLE_NAME}"
+      "ApiPermissionTableName"    = "${var.API_PERMISSION_TABLE_NAME}"
       "UserPoolId"                = "${var.USERPOOL_ID}"
     }
   }
@@ -1170,6 +1284,427 @@ resource "aws_lambda_function" "lambda_developer_portal_authoriser_function" {
       "CustomersTableName" = "${var.CUSTOMER_TABLE_NAME}"
       "PreLoginAccountsTableName" = "${var.PRE_LOGIN_ACCOUNT_TABLE_NAME}"
       "ApiPermissionTable" = "${var.API_PERMISSION_TABLE_NAME}"
+    }
+  }
+}
+
+
+resource "aws_lambda_function" "lambda_get_mno_third_party_resources_by_id_function" {
+  provider            = aws.src
+  filename         = "${path.module}/zip/get-mno-third-party-resources-by-id.zip"
+  function_name    = "${var.RESOURCE_PREFIX}-get-mno-third-party-resources-by-id"
+  role             = "${var.LAMBDA_BACKEND_ROLE_ARN}"
+  handler          = "index.handler"
+  source_code_hash = "${data.archive_file.lambda_backend_lambda_function.output_base64sha256}"
+  runtime          = "nodejs12.x"
+  timeout          = "20"
+  layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }
+  environment {
+    variables = {
+      "NODE_ENV"                  = "${var.NODE_ENV}"
+      "WEBSITE_BUCKET_NAME"       = "${var.WEBSITE_BUCKET_NAME}"
+      "StaticBucketName"          = "${var.ARTIFACTS_S3_BUCKET_NAME}"
+      "CustomersTableName"        = "${var.CUSTOMER_TABLE_NAME}"
+      "PreLoginAccountsTableName" = "${var.PRE_LOGIN_ACCOUNT_TABLE_NAME}"
+      "FeedbackTableName"         = "${var.FEEDBACK_TABLE_NAME}"
+      "FeedbackSnsTopicArn"       = "${var.FEEDBACK_SNS_TOPIC_ARN}"
+      "UserPoolId"                = "${var.USERPOOL_ID}"
+      "AdminsGroupName"           = "${var.ADMIN_GROUP_NAME}"
+      "RegisteredGroupName"       = "${var.REGISTERED_GROUP_NAME}"
+      "DevelopmentMode"           = "${var.DEVELOPMENT_MODE}"
+      "MnoThirdPartyResourceTableName" = "${var.MNO_THIRD_PARTY_RESOURCE_TABLE_NAME}"
+
+      "CatalogUpdaterFunctionArn" = aws_lambda_function.lambda_catalog_updater_lambda_function.arn
+
+    }
+  }
+} 
+
+resource "aws_lambda_function" "lambda_get_third_party_resources_by_type_function" {
+  provider            = aws.src
+  filename         = "${path.module}/zip/get-third-party-resources-by-type.zip"
+  function_name    = "${var.RESOURCE_PREFIX}-get-third-party-resources-type-id"
+  role             = "${var.LAMBDA_BACKEND_ROLE_ARN}"
+  handler          = "index.handler"
+  source_code_hash = "${data.archive_file.lambda_backend_lambda_function.output_base64sha256}"
+  runtime          = "nodejs12.x"
+  timeout          = "20"
+  layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+ tracing_config {
+    mode = "PassThrough"
+  }
+  environment {
+    variables = {
+      "NODE_ENV"                  = "${var.NODE_ENV}"
+      "WEBSITE_BUCKET_NAME"       = "${var.WEBSITE_BUCKET_NAME}"
+      "StaticBucketName"          = "${var.ARTIFACTS_S3_BUCKET_NAME}"
+      "CustomersTableName"        = "${var.CUSTOMER_TABLE_NAME}"
+      "PreLoginAccountsTableName" = "${var.PRE_LOGIN_ACCOUNT_TABLE_NAME}"
+      "FeedbackTableName"         = "${var.FEEDBACK_TABLE_NAME}"
+      "FeedbackSnsTopicArn"       = "${var.FEEDBACK_SNS_TOPIC_ARN}"
+      "UserPoolId"                = "${var.USERPOOL_ID}"
+      "AdminsGroupName"           = "${var.ADMIN_GROUP_NAME}"
+      "RegisteredGroupName"       = "${var.REGISTERED_GROUP_NAME}"
+      "DevelopmentMode"           = "${var.DEVELOPMENT_MODE}"
+      "CatalogUpdaterFunctionArn" = aws_lambda_function.lambda_catalog_updater_lambda_function.arn
+
+    }
+  }
+} 
+
+resource "aws_lambda_function" "lambda_get_mno_resources_by_type_function" {
+  provider            = aws.src
+  filename         = "${path.module}/zip/get-mno-resources-by-type.zip"
+  function_name    = "${var.RESOURCE_PREFIX}-get-mno-resources-type-id"
+  role             = "${var.LAMBDA_BACKEND_ROLE_ARN}"
+  handler          = "index.handler"
+  source_code_hash = "${data.archive_file.lambda_backend_lambda_function.output_base64sha256}"
+  runtime          = "nodejs12.x"
+  timeout          = "20"
+  layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }
+  environment {
+    variables = {
+      "NODE_ENV"                  = "${var.NODE_ENV}"
+      "WEBSITE_BUCKET_NAME"       = "${var.WEBSITE_BUCKET_NAME}"
+      "StaticBucketName"          = "${var.ARTIFACTS_S3_BUCKET_NAME}"
+      "CustomersTableName"        = "${var.CUSTOMER_TABLE_NAME}"
+      "PreLoginAccountsTableName" = "${var.PRE_LOGIN_ACCOUNT_TABLE_NAME}"
+      "FeedbackTableName"         = "${var.FEEDBACK_TABLE_NAME}"
+      "FeedbackSnsTopicArn"       = "${var.FEEDBACK_SNS_TOPIC_ARN}"
+      "UserPoolId"                = "${var.USERPOOL_ID}"
+      "AdminsGroupName"           = "${var.ADMIN_GROUP_NAME}"
+      "RegisteredGroupName"       = "${var.REGISTERED_GROUP_NAME}"
+      "DevelopmentMode"           = "${var.DEVELOPMENT_MODE}"
+      "MnoThirdPartyResourceTableName" = "${var.MNO_THIRD_PARTY_RESOURCE_TABLE_NAME}"
+      "CatalogUpdaterFunctionArn" = aws_lambda_function.lambda_catalog_updater_lambda_function.arn
+
+    }
+  }
+} 
+
+
+resource "aws_lambda_function" "lambda_get_third_party_resource_users_account_function" {
+  provider            = aws.src
+  filename         = "${path.module}/zip/get-third-party-resource-users-accounts.zip"
+  function_name    = "${var.RESOURCE_PREFIX}-get-third-party-resource-users-accounts"
+  role             = "${var.LAMBDA_BACKEND_ROLE_ARN}"
+  handler          = "index.handler"
+  source_code_hash = "${data.archive_file.lambda_backend_lambda_function.output_base64sha256}"
+  runtime          = "nodejs12.x"
+  timeout          = "20"
+  layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }
+  environment {
+    variables = {
+      "NODE_ENV"                  = "${var.NODE_ENV}"
+      "WEBSITE_BUCKET_NAME"       = "${var.WEBSITE_BUCKET_NAME}"
+      "StaticBucketName"          = "${var.ARTIFACTS_S3_BUCKET_NAME}"
+      "CustomersTableName"        = "${var.CUSTOMER_TABLE_NAME}"
+      "PreLoginAccountsTableName" = "${var.PRE_LOGIN_ACCOUNT_TABLE_NAME}"
+      "FeedbackTableName"         = "${var.FEEDBACK_TABLE_NAME}"
+      "FeedbackSnsTopicArn"       = "${var.FEEDBACK_SNS_TOPIC_ARN}"
+      "UserPoolId"                = "${var.USERPOOL_ID}"
+      "AdminsGroupName"           = "${var.ADMIN_GROUP_NAME}"
+      "RegisteredGroupName"       = "${var.REGISTERED_GROUP_NAME}"
+      "DevelopmentMode"           = "${var.DEVELOPMENT_MODE}"
+      "CatalogUpdaterFunctionArn" = aws_lambda_function.lambda_catalog_updater_lambda_function.arn
+
+    }
+  }
+} 
+
+resource "aws_lambda_function" "lambda_get_mno_resource_users_account_function" {
+  provider            = aws.src
+  filename         = "${path.module}/zip/get-mno-resource-users-accounts.zip"
+  function_name    = "${var.RESOURCE_PREFIX}-get-mno-resource-users-accounts"
+  role             = "${var.LAMBDA_BACKEND_ROLE_ARN}"
+  handler          = "index.handler"
+  source_code_hash = "${data.archive_file.lambda_backend_lambda_function.output_base64sha256}"
+  runtime          = "nodejs12.x"
+  timeout          = "20"
+  layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }
+  environment {
+    variables = {
+      "NODE_ENV"                  = "${var.NODE_ENV}"
+      "WEBSITE_BUCKET_NAME"       = "${var.WEBSITE_BUCKET_NAME}"
+      "StaticBucketName"          = "${var.ARTIFACTS_S3_BUCKET_NAME}"
+      "CustomersTableName"        = "${var.CUSTOMER_TABLE_NAME}"
+      "MnoThirdPartyResourceTableName" = "${var.MNO_THIRD_PARTY_RESOURCE_TABLE_NAME}"
+      "PreLoginAccountsTableName" = "${var.PRE_LOGIN_ACCOUNT_TABLE_NAME}"
+      "FeedbackTableName"         = "${var.FEEDBACK_TABLE_NAME}"
+      "FeedbackSnsTopicArn"       = "${var.FEEDBACK_SNS_TOPIC_ARN}"
+      "UserPoolId"                = "${var.USERPOOL_ID}"
+      "AdminsGroupName"           = "${var.ADMIN_GROUP_NAME}"
+      "RegisteredGroupName"       = "${var.REGISTERED_GROUP_NAME}"
+      "DevelopmentMode"           = "${var.DEVELOPMENT_MODE}"
+      "CatalogUpdaterFunctionArn" = aws_lambda_function.lambda_catalog_updater_lambda_function.arn
+
+    }
+  }
+} 
+
+resource "aws_lambda_function" "lambda_get_mno_user_by_id_function" {
+  provider            = aws.src
+  filename         = "${path.module}/zip/get-mno-user-by-id.zip"
+  function_name    = "${var.RESOURCE_PREFIX}-get-mno-user-id-id"
+  role             = "${var.LAMBDA_BACKEND_ROLE_ARN}"
+  handler          = "index.handler"
+  source_code_hash = "${data.archive_file.lambda_backend_lambda_function.output_base64sha256}"
+  runtime          = "nodejs12.x"
+  timeout          = "20"
+  layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
+  environment {
+    variables = {
+      "NODE_ENV"                  = "${var.NODE_ENV}"
+      "WEBSITE_BUCKET_NAME"       = "${var.WEBSITE_BUCKET_NAME}"
+      "StaticBucketName"          = "${var.ARTIFACTS_S3_BUCKET_NAME}"
+      "CustomersTableName"        = "${var.CUSTOMER_TABLE_NAME}"
+      "PreLoginAccountsTableName" = "${var.PRE_LOGIN_ACCOUNT_TABLE_NAME}"
+      "FeedbackTableName"         = "${var.FEEDBACK_TABLE_NAME}"
+      "FeedbackSnsTopicArn"       = "${var.FEEDBACK_SNS_TOPIC_ARN}"
+      "UserPoolId"                = "${var.USERPOOL_ID}"
+      "AdminsGroupName"           = "${var.ADMIN_GROUP_NAME}"
+      "RegisteredGroupName"       = "${var.REGISTERED_GROUP_NAME}"
+      "DevelopmentMode"           = "${var.DEVELOPMENT_MODE}"
+      "CatalogUpdaterFunctionArn" = aws_lambda_function.lambda_catalog_updater_lambda_function.arn
+
+    }
+  }
+} 
+
+resource "aws_lambda_function" "lambda_get_third_party_user_by_id_function" {
+  provider            = aws.src
+  filename         = "${path.module}/zip/get-third-party-user-by-id.zip"
+  function_name    = "${var.RESOURCE_PREFIX}-get-third-party-user-id"
+  role             = "${var.LAMBDA_BACKEND_ROLE_ARN}"
+  handler          = "index.handler"
+  source_code_hash = "${data.archive_file.lambda_backend_lambda_function.output_base64sha256}"
+  runtime          = "nodejs12.x"
+  timeout          = "20"
+  layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }
+  environment {
+    variables = {
+      "NODE_ENV"                  = "${var.NODE_ENV}"
+      "WEBSITE_BUCKET_NAME"       = "${var.WEBSITE_BUCKET_NAME}"
+      "StaticBucketName"          = "${var.ARTIFACTS_S3_BUCKET_NAME}"
+      "CustomersTableName"        = "${var.CUSTOMER_TABLE_NAME}"
+      "PreLoginAccountsTableName" = "${var.PRE_LOGIN_ACCOUNT_TABLE_NAME}"
+      "FeedbackTableName"         = "${var.FEEDBACK_TABLE_NAME}"
+      "FeedbackSnsTopicArn"       = "${var.FEEDBACK_SNS_TOPIC_ARN}"
+      "UserPoolId"                = "${var.USERPOOL_ID}"
+      "AdminsGroupName"           = "${var.ADMIN_GROUP_NAME}"
+      "RegisteredGroupName"       = "${var.REGISTERED_GROUP_NAME}"
+      "DevelopmentMode"           = "${var.DEVELOPMENT_MODE}"
+      "CatalogUpdaterFunctionArn" = aws_lambda_function.lambda_catalog_updater_lambda_function.arn
+
+    }
+  }
+} 
+
+
+resource "aws_lambda_function" "lambda_create_mno_resource_user_function" {
+  provider            = aws.src
+  filename         = "${path.module}/zip/create-mno-resource-user.zip"
+  function_name    = "${var.RESOURCE_PREFIX}-create-mno-resource-user"
+  role             = "${var.LAMBDA_BACKEND_ROLE_ARN}"
+  handler          = "index.handler"
+  source_code_hash = "${data.archive_file.lambda_backend_lambda_function.output_base64sha256}"
+  runtime          = "nodejs12.x"
+  timeout          = "20"
+  layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
+  environment {
+    variables = {
+      "NODE_ENV"                  = "${var.NODE_ENV}"
+      "WEBSITE_BUCKET_NAME"       = "${var.WEBSITE_BUCKET_NAME}"
+      "StaticBucketName"          = "${var.ARTIFACTS_S3_BUCKET_NAME}"
+      "CustomersTableName"        = "${var.CUSTOMER_TABLE_NAME}"
+      "PreLoginAccountsTableName" = "${var.PRE_LOGIN_ACCOUNT_TABLE_NAME}"
+      "FeedbackTableName"         = "${var.FEEDBACK_TABLE_NAME}"
+      "FeedbackSnsTopicArn"       = "${var.FEEDBACK_SNS_TOPIC_ARN}"
+      "MNO_UserPoolId"            = "${var.MNO_USERPOOL_ID}"
+     "AdminsGroupName"           = "${var.ADMIN_GROUP_NAME}"
+      "RegisteredGroupName"       = "${var.REGISTERED_GROUP_NAME}"
+      "DevelopmentMode"           = "${var.DEVELOPMENT_MODE}"
+      "CatalogUpdaterFunctionArn" = aws_lambda_function.lambda_catalog_updater_lambda_function.arn
+      "MnoThirdPartyResourceTableName" = "${var.MNO_THIRD_PARTY_RESOURCE_TABLE_NAME}"
+
+
+    }
+  }
+} 
+
+
+resource "aws_lambda_function" "lambda_create_third_party_resource_user_function" {
+  provider            = aws.src
+  filename         = "${path.module}/zip/create-third-party-resource-user.zip"
+  function_name    = "${var.RESOURCE_PREFIX}-create-third-party-resource-user"
+  role             = "${var.LAMBDA_BACKEND_ROLE_ARN}"
+  handler          = "index.handler"
+  source_code_hash = "${data.archive_file.lambda_backend_lambda_function.output_base64sha256}"
+  runtime          = "nodejs12.x"
+  timeout          = "20"
+  layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
+  environment {
+    variables = {
+      "NODE_ENV"                  = "${var.NODE_ENV}"
+      "WEBSITE_BUCKET_NAME"       = "${var.WEBSITE_BUCKET_NAME}"
+      "StaticBucketName"          = "${var.ARTIFACTS_S3_BUCKET_NAME}"
+      "CustomersTableName"        = "${var.CUSTOMER_TABLE_NAME}"
+      "PreLoginAccountsTableName" = "${var.PRE_LOGIN_ACCOUNT_TABLE_NAME}"
+      "FeedbackTableName"         = "${var.FEEDBACK_TABLE_NAME}"
+      "FeedbackSnsTopicArn"       = "${var.FEEDBACK_SNS_TOPIC_ARN}"
+      "Third_Party_UserPoolId"    = "${var.THIRD_PARTY_USERPOOL_ID}"
+     "AdminsGroupName"           = "${var.ADMIN_GROUP_NAME}"
+      "RegisteredGroupName"       = "${var.REGISTERED_GROUP_NAME}"
+      "DevelopmentMode"           = "${var.DEVELOPMENT_MODE}"
+      "CatalogUpdaterFunctionArn" = aws_lambda_function.lambda_catalog_updater_lambda_function.arn
+
+    }
+  }
+} 
+
+
+//DELETE
+
+resource "aws_lambda_function" "lambda_delete_third_party_resource_user_function" {
+  provider            = aws.src
+  filename         = "${path.module}/zip/delete-third-party-resource-user.zip"
+  function_name    = "${var.RESOURCE_PREFIX}-delete-third-party-resource"
+  role             = "${var.LAMBDA_BACKEND_ROLE_ARN}"
+  handler          = "index.handler"
+  source_code_hash = "${data.archive_file.lambda_backend_lambda_function.output_base64sha256}"
+  runtime          = "nodejs12.x"
+  timeout          = "20"
+  layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
+  environment {
+    variables = {
+      "NODE_ENV"                  = "${var.NODE_ENV}"
+      "WEBSITE_BUCKET_NAME"       = "${var.WEBSITE_BUCKET_NAME}"
+      "StaticBucketName"          = "${var.ARTIFACTS_S3_BUCKET_NAME}"
+      "CustomersTableName"        = "${var.CUSTOMER_TABLE_NAME}"
+      "PreLoginAccountsTableName" = "${var.PRE_LOGIN_ACCOUNT_TABLE_NAME}"
+      "FeedbackTableName"         = "${var.FEEDBACK_TABLE_NAME}"
+      "FeedbackSnsTopicArn"       = "${var.FEEDBACK_SNS_TOPIC_ARN}"
+       "Third_Party_UserPoolId"    = "${var.THIRD_PARTY_USERPOOL_ID}"
+     "AdminsGroupName"           = "${var.ADMIN_GROUP_NAME}"
+      "RegisteredGroupName"       = "${var.REGISTERED_GROUP_NAME}"
+      "DevelopmentMode"           = "${var.DEVELOPMENT_MODE}"
+      "CatalogUpdaterFunctionArn" = aws_lambda_function.lambda_catalog_updater_lambda_function.arn
+
+    }
+  }
+} 
+
+
+resource "aws_lambda_function" "lambda_delete_mno_resource_user_function" {
+  provider            = aws.src
+  filename         = "${path.module}/zip/delete-mno-resource-user.zip"
+  function_name    = "${var.RESOURCE_PREFIX}-delete-mno-resource-user"
+  role             = "${var.LAMBDA_BACKEND_ROLE_ARN}"
+  handler          = "index.handler"
+  source_code_hash = "${data.archive_file.lambda_backend_lambda_function.output_base64sha256}"
+  runtime          = "nodejs12.x"
+  timeout          = "20"
+  layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
+  environment {
+    variables = {
+      "NODE_ENV"                  = "${var.NODE_ENV}"
+      "WEBSITE_BUCKET_NAME"       = "${var.WEBSITE_BUCKET_NAME}"
+      "StaticBucketName"          = "${var.ARTIFACTS_S3_BUCKET_NAME}"
+      "CustomersTableName"        = "${var.CUSTOMER_TABLE_NAME}"
+      "PreLoginAccountsTableName" = "${var.PRE_LOGIN_ACCOUNT_TABLE_NAME}"
+      "FeedbackTableName"         = "${var.FEEDBACK_TABLE_NAME}"
+      "FeedbackSnsTopicArn"       = "${var.FEEDBACK_SNS_TOPIC_ARN}"
+      "MNO_UserPoolId"    = "${var.MNO_USERPOOL_ID}"
+     "AdminsGroupName"           = "${var.ADMIN_GROUP_NAME}"
+      "RegisteredGroupName"       = "${var.REGISTERED_GROUP_NAME}"
+      "DevelopmentMode"           = "${var.DEVELOPMENT_MODE}"
+      "CatalogUpdaterFunctionArn" = aws_lambda_function.lambda_catalog_updater_lambda_function.arn
+      "MnoThirdPartyResourceTableName" = "${var.MNO_THIRD_PARTY_RESOURCE_TABLE_NAME}"
+
+
+    }
+  }
+} 
+
+
+resource "aws_lambda_function" "lambda_update_user_account_function" {
+  provider            = aws.src
+  filename         = "${path.module}/zip/update-user-account.zip"
+  function_name    = "${var.RESOURCE_PREFIX}-update-user-account"
+  role             = "${var.LAMBDA_BACKEND_ROLE_ARN}"
+  handler          = "index.handler"
+  source_code_hash = "${data.archive_file.lambda_update_user_account_function.output_base64sha256}"
+  runtime          = "nodejs12.x"
+  timeout          = "20"
+  layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
+  environment {
+    variables = {
+      "NODE_ENV"                  = "${var.NODE_ENV}"
+      "WEBSITE_BUCKET_NAME"       = "${var.WEBSITE_BUCKET_NAME}"
+      "StaticBucketName"          = "${var.ARTIFACTS_S3_BUCKET_NAME}"
+      "CustomersTableName"        = "${var.CUSTOMER_TABLE_NAME}"
+      "PreLoginAccountsTableName" = "${var.PRE_LOGIN_ACCOUNT_TABLE_NAME}"
+      "FeedbackTableName"         = "${var.FEEDBACK_TABLE_NAME}"
+      "FeedbackSnsTopicArn"       = "${var.FEEDBACK_SNS_TOPIC_ARN}"
+      "UserPoolId"                = "${var.USERPOOL_ID}"
+      "AdminsGroupName"           = "${var.ADMIN_GROUP_NAME}"
+      "RegisteredGroupName"       = "${var.REGISTERED_GROUP_NAME}"
+      "DevelopmentMode"           = "${var.DEVELOPMENT_MODE}"
+      "CatalogUpdaterFunctionArn" = aws_lambda_function.lambda_catalog_updater_lambda_function.arn
+    }
+  }
+}
+
+resource "aws_lambda_function" "lambda_get_all_apis_for_resource_function" {
+  provider            = aws.src
+  filename         = "${path.module}/zip/get-all-apis-permissions-for-resources.zip"
+  function_name    = "${var.RESOURCE_PREFIX}-get-all-apis-permissions-for-resources"
+  role             = "${var.LAMBDA_BACKEND_ROLE_ARN}"
+  handler          = "index.handler"
+  source_code_hash = "${data.archive_file.lambda_create_permissions_for_api_function.output_base64sha256}"
+  runtime          = "nodejs12.x"
+  timeout          = "20"
+  layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
+  environment {
+    variables = {
+      "ApiPermissionTableName"    = "${var.API_PERMISSION_TABLE_NAME}"
+      "UserPoolId"                = "${var.USERPOOL_ID}"
     }
   }
 }

@@ -223,6 +223,27 @@ resource "aws_cognito_user_pool" "third_party_cognito_user_pool" {
       max_length = 2048            # 10 for "birthdate"
     }
   }
+  schema {
+    name                = "client_id"
+    attribute_data_type = "String"
+    mutable             = true    # false for "sub"
+    required            = false    # true for "sub"
+    string_attribute_constraints { # if it is a string
+      min_length = 1               # 10 for "birthdate"
+      max_length = 2048            # 10 for "birthdate"
+    }
+  }
+  
+  schema {
+  name                = "client_type"
+  attribute_data_type = "String"
+  mutable             = true    # false for "sub"
+  required            = false    # true for "sub"
+  string_attribute_constraints { # if it is a string
+    min_length = 1               # 10 for "birthdate"
+    max_length = 2048            # 10 for "birthdate"
+    }
+  }
   account_recovery_setting {
     recovery_mechanism {
       name     = "verified_email"
@@ -268,7 +289,7 @@ resource "aws_cognito_user_pool_domain" "third_party_main" {
 
 //cognito admin group
 resource "aws_cognito_user_group" "third_party_cognito_admin_group" {
-  name         = var.ADMIN_GROUP_NAME
+  name         = var.THIRD_PARTY_ADMIN_GROUP_NAME
   user_pool_id = aws_cognito_user_pool.third_party_cognito_user_pool.id
   description  = var.COGNITO_ADMIN_GROUP_DESCRIPTION
   precedence   = 0
@@ -386,9 +407,9 @@ resource "aws_cognito_user_pool" "mno_cognito_user_pool" {
     }
   }
   schema {
-    name                = "resournce_name"
+    name                = "client_id"
     attribute_data_type = "String"
-    mutable             = false    # false for "sub"
+    mutable             = true    # false for "sub"
     required            = false    # true for "sub"
     string_attribute_constraints { # if it is a string
       min_length = 1               # 10 for "birthdate"
@@ -396,9 +417,9 @@ resource "aws_cognito_user_pool" "mno_cognito_user_pool" {
     }
   }
   schema {
-  name                = "resource_type"
+  name                = "client_type"
   attribute_data_type = "String"
-  mutable             = false    # false for "sub"
+  mutable             = true    # false for "sub"
   required            = false    # true for "sub"
   string_attribute_constraints { # if it is a string
     min_length = 1               # 10 for "birthdate"
@@ -450,7 +471,7 @@ resource "aws_cognito_user_pool_domain" "mno_main" {
 
 //cognito admin group
 resource "aws_cognito_user_group" "mno_cognito_admin_group" {
-  name         = var.ADMIN_GROUP_NAME
+  name         = var.MNO_ADMIN_GROUP_NAME
   user_pool_id = aws_cognito_user_pool.mno_cognito_user_pool.id
   description  = var.COGNITO_ADMIN_GROUP_DESCRIPTION
   precedence   = 0

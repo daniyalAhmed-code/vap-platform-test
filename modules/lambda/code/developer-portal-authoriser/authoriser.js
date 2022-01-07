@@ -103,36 +103,36 @@ const processAuthRequest = async(payload, awsAccountId, apiOptions) => {
             
             policy.allowMethod(AuthPolicy.HttpVerb.ALL, "/*");
             // Get list of all
-        //     for (let ar of apisResponse.Items) {
-        //         if (ar.hasOwnProperty('ResourceId')){
-        //         console.log("Has own property")
-        //         if (user_groups.includes(ar.role) && ar.ResourceId == apiPermissionRespone.Items[0].Id ) {
-        //             console.log("in resource check")
-        //             console.log("in user-group")
-        //             console.log(apiPermissionRespone)
-        //             for (let api of ar.apis) {
-        //                 console.log(apiPermissionRespone.Items[0].ApiId)
-        //                 if (apiPermissionRespone.Items[0].ApiId.includes(ApiId))
-        //                 {
-        //                     allowedApis= apiPermissionRespone.Items[0].ApiId
-        //                     console.log("in api")
-        //                     policy.allowMethod(AuthPolicy.HttpVerb[api.method], api.api);
-        //                 }
+            for (let ar of apisResponse.Items) {
+                if (ar.hasOwnProperty('UserPoolId')){
+                console.log("Has own property")
+                if (user_groups.includes(ar.role) && ar.UserPoolId == UserPoolId ) {
+                    console.log("in resource check")
+                    console.log("in user-group")
+                    console.log(apiPermissionRespone)
+                    for (let api of ar.apis) {
+                        console.log(apiPermissionRespone.Items[0].ApiId)
+                        if (apiPermissionRespone.Items[0].ApiId.includes(ApiId))
+                        {
+                            allowedApis= apiPermissionRespone.Items[0].ApiId
+                            console.log("in api")
+                            policy.allowMethod(AuthPolicy.HttpVerb[api.method], api.api);
+                        }
                 
-        //             }
+                    }
                 
-        //         }
-        //     }
-        //     else {
-        //         if (user_groups.includes(ar.role)) {
+                }
+            }
+            else {
+                if (user_groups.includes(ar.role)) {
                     
-        //             console.log("in user-group")
-        //             for (let api of ar.apis) {
-        //                     policy.allowMethod(AuthPolicy.HttpVerb[api.method], api.api);
-        //                 }
-        //             }
-        //         }
-        // }
+                    console.log("in user-group")
+                    for (let api of ar.apis) {
+                            policy.allowMethod(AuthPolicy.HttpVerb[api.method], api.api);
+                        }
+                    }
+                }
+        }
         }
         else {
             console.log("in else deny")
