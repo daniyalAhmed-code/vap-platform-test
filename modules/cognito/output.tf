@@ -10,6 +10,14 @@ output "COGNITO_USERPOOL_ARN" {
 output "COGNITO_USERPOOL_CLIENT" {
   value = aws_cognito_user_pool_client.cognito_user_pool_client.id
 }
+output "THIRD_PARTY_COGNITO_USERPOOL_CLIENT" {
+  value = aws_cognito_user_pool_client.third_party_cognito_user_pool_client.id
+}
+output "MNO_COGNITO_USERPOOL_CLIENT" {
+  value = aws_cognito_user_pool_client.mno_cognito_user_pool_client.id
+}
+
+
 output "COGNITO_USERPOOL_DOMAIN" {
   value = aws_cognito_user_pool_domain.main.id
 }

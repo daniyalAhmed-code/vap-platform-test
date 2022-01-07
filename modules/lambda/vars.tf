@@ -25,8 +25,15 @@ variable "ACCOUNT_REGISTRATION_MODE" {}
 variable "RESOURCE_PREFIX" {}
 variable "IS_ADMIN" {}
 variable "API_GATEWAY_API" {}
+
 variable "USERPOOL_DOMAIN" {}
+variable "MNO_COGNITO_USER_POOL_DOMAIN" {}
+variable "THIRD_PARTY_COGNITO_USER_POOL_DOMAIN" {}
+
 variable "USERPOOL_CLIENT_ID" {}
+variable "THIRD_PARTY_USERPOOL_CLIENT_ID" {}
+variable "MNO_USERPOOL_CLIENT_ID" {}
+
 variable "IDENTITYPOOL_ID" {}
 variable "FEEDBACK_ENABLED" {}
 variable "AWS_REGION" {}

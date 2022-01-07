@@ -113,8 +113,14 @@ module "lambda" {
   AWS_ACCOUNT_ID                                      = local.CURRENT_ACCOUNT_ID
   API_GATEWAY_API                                     = module.api.API_GATEWAY_ID
   FEEDBACK_ENABLED                                    = local.IS_ADMIN
+
   USERPOOL_DOMAIN                                     = "https://${var.COGNITO_USER_POOL_DOMAIN}.auth.${data.aws_region.current.name}.amazoncognito.com"
+  MNO_COGNITO_USER_POOL_DOMAIN                        = "https://${var.MNO_COGNITO_USER_POOL_DOMAIN}.auth.${data.aws_region.current.name}.amazoncognito.com"
+  THIRD_PARTY_COGNITO_USER_POOL_DOMAIN                = "https://${var.THIRD_PARTY_COGNITO_USER_POOL_DOMAIN}.auth.${data.aws_region.current.name}.amazoncognito.com"
+  
   USERPOOL_CLIENT_ID                                  = module.cognito.COGNITO_USERPOOL_CLIENT
+  THIRD_PARTY_USERPOOL_CLIENT_ID                      = module.cognito.THIRD_PARTY_COGNITO_USERPOOL_CLIENT
+  MNO_USERPOOL_CLIENT_ID                              = module.cognito.MNO_COGNITO_USERPOOL_CLIENT
   IDENTITYPOOL_ID                                     = module.cognito.COGNITO_IDENTITY_POOL
   APIGATEWAY_CUSTOM_DOMAIN_NAME                       = var.APIGATEWAY_CUSTOM_DOMAIN_NAME
   LAMBDA_INVOKE_API_KEY_ROTATION_ROLE_ARN             = module.role.LAMBDA_INVOKE_API_KEY_ROTATION_ROLE_ARN
