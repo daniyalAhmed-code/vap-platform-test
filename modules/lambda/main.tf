@@ -222,6 +222,8 @@ resource "aws_lambda_function" "lambda_api_key_authoriser_function" {
       "UserPoolId"         = "${var.USERPOOL_ID}"
       "CustomersTableName" = "${var.CUSTOMER_TABLE_NAME}"
       "CustomerRequestLogTable" = "${var.CUSTOMER_REQUEST_LOGS_TABLE_NAME}"
+      "ApiPermissionTableName" = "${var.API_PERMISSION_TABLE_NAME}"
+      "IsEnabled"              = false
     }
   }
 }

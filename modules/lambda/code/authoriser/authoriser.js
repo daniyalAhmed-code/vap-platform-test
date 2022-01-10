@@ -10,6 +10,7 @@ const dynamodb = new AWS.DynamoDB.DocumentClient();
 const apigateway = new AWS.APIGateway();
 const cognito = new AWS.CognitoIdentityServiceProvider();
 const { v4: uuidv4 } = require('uuid');
+
 const {
     getEnv
 } = require('dev-portal-common/get-env');
@@ -52,7 +53,7 @@ exports.handler = async (event, context, callback) => {
         console.log(err);
         return deny(awsAccountId, apiOptions);
     }
-
+    let client_id = ""
     let userId = apiKey.name.split("/")[0];
     let tableName = `${process.env.CustomersTableName}`;
     let apisResponse = await dynamodb.query({
@@ -65,6 +66,7 @@ exports.handler = async (event, context, callback) => {
     
     console.log(apisResponse);
     
+
     if (apisResponse.Count <= 0)
         return deny(awsAccountId, apiOptions);
 
@@ -72,15 +74,27 @@ exports.handler = async (event, context, callback) => {
     let cognitoResponse = await cognito.adminGetUser({
         UserPoolId: userPoolId,
         Username: username
-    });
-    
-    
+    }).promise();
+
+     for (let userAttribute of cognitoResponse.UserAttributes)
+      if(userAttribute.Name == 'custom:client_id')
+         client_id =userAttribute.Value  
+
     console.log(cognitoResponse);
+
     await saveApiDetails(event, apisResponse.Items[0]);
-    
+    let ApiRolePermissionTableName = `${process.env.API_PERMISSION_TABLE_NAME}`
+    let permissionsResponse = await dynamodb.query({
+      TableName: ApiRolePermissionTableName,
+      KeyConditionExpression: "client_id = :id",
+      ExpressionAttributeValues: {
+          ":id": client_id
+      }
+  }).promise();    
+
     if (!apisResponse.Items[0].hasOwnProperty("ApiKeyDuration")) {
         console.log("ApiKeyDuration not present");
-        return generate_api_gateway_response(awsAccountId, apiOptions, username, userId);
+        return generate_api_gateway_response(awsAccountId, apiOptions, permissionsResponse, username, userId);
     }
     
     console.log("ApiKeyDuration present");
@@ -95,17 +109,23 @@ exports.handler = async (event, context, callback) => {
     ApiDate.setDate(ApiDate.getDate() + apisResponse.Items[0].ApiKeyDuration);
     
     if (ApiDate > current_date) {
-        return generate_api_gateway_response(awsAccountId, apiOptions, username, userId);
+        return generate_api_gateway_response(awsAccountId, apiOptions, client_id,permissionsResponse ,username, userId);
     }
     else
         return deny(awsAccountId, apiOptions);
 };
 
 
-function generate_api_gateway_response(awsAccountId, apiOptions, username, userId) {
-    var authPolicy = new AuthPolicy(`${awsAccountId}`, awsAccountId, apiOptions);
-    authPolicy.allowMethod(AuthPolicy.HttpVerb.ALL, "/*");
-    
+function generate_api_gateway_response(awsAccountId, apiOptions, client_id, permissionsResponse, username, userId) {
+    if(`${process.env.IsEnabled}`)
+    {
+      if(!permissionsResponse.Item.ApiId.includes(apiOptions.restApiId))
+        return deny(awsAccountId, apiOptions);
+     }
+    else{
+        var authPolicy = new AuthPolicy(`${awsAccountId}`, awsAccountId, apiOptions);
+        authPolicy.allowMethod(AuthPolicy.HttpVerb.ALL, "/*");
+    }   
     var generated = authPolicy.build();
     generated["context"] = {
         "cognito_username": username,
