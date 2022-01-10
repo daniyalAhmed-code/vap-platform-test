@@ -55,6 +55,7 @@ exports.handler = async (event, context, callback) => {
     }
     let client_id = ""
     let userId = apiKey.name.split("/")[0];
+
     let tableName = `${process.env.CustomersTableName}`;
     let apisResponse = await dynamodb.query({
         TableName: tableName,
@@ -76,17 +77,14 @@ exports.handler = async (event, context, callback) => {
         Username: username
     }).promise();
 
-     for (let userAttribute of cognitoResponse.UserAttributes)
+   for (let userAttribute of cognitoResponse.UserAttributes)
       if(userAttribute.Name == 'custom:client_id')
-         client_id =userAttribute.Value  
-
-    console.log(cognitoResponse);
-
+       client_id =userAttribute.Value
     await saveApiDetails(event, apisResponse.Items[0]);
-    let ApiRolePermissionTableName = `${process.env.API_PERMISSION_TABLE_NAME}`
+    let ApiRolePermissionTableName = `${process.env.ApiPermissionTableName}`
     let permissionsResponse = await dynamodb.query({
       TableName: ApiRolePermissionTableName,
-      KeyConditionExpression: "client_id = :id",
+      KeyConditionExpression: "Id = :id",
       ExpressionAttributeValues: {
           ":id": client_id
       }
@@ -109,23 +107,22 @@ exports.handler = async (event, context, callback) => {
     ApiDate.setDate(ApiDate.getDate() + apisResponse.Items[0].ApiKeyDuration);
     
     if (ApiDate > current_date) {
-        return generate_api_gateway_response(awsAccountId, apiOptions, client_id,permissionsResponse ,username, userId);
+        return generate_api_gateway_response(awsAccountId, apiOptions, permissionsResponse ,username, userId);
     }
     else
         return deny(awsAccountId, apiOptions);
 };
 
 
-function generate_api_gateway_response(awsAccountId, apiOptions, client_id, permissionsResponse, username, userId) {
-    if(`${process.env.IsEnabled}`)
-    {
-      if(!permissionsResponse.Item.ApiId.includes(apiOptions.restApiId))
+function generate_api_gateway_response(awsAccountId, apiOptions, permissionsResponse, username, userId) {
+    if(`${process.env.isEnabled}` != "false"){
+      if(!permissionsResponse.Items[0].ApiId.includes(apiOptions.restApiId))
         return deny(awsAccountId, apiOptions);
-     }
+    }
     else{
-        var authPolicy = new AuthPolicy(`${awsAccountId}`, awsAccountId, apiOptions);
-        authPolicy.allowMethod(AuthPolicy.HttpVerb.ALL, "/*");
-    }   
+    var authPolicy = new AuthPolicy(`${awsAccountId}`, awsAccountId, apiOptions);
+    authPolicy.allowMethod(AuthPolicy.HttpVerb.ALL, "/*");
+    
     var generated = authPolicy.build();
     generated["context"] = {
         "cognito_username": username,
@@ -134,7 +131,7 @@ function generate_api_gateway_response(awsAccountId, apiOptions, client_id, perm
     
     return generated;
 }
-
+}
 async function saveApiDetails(event, user_data){
     try {
         
