@@ -927,6 +927,7 @@ resource "aws_api_gateway_resource" "apikey_resource" {
   path_part   = "apikey"
 }
 
+
 module "apiKey_resource_OPTION" {
   source                          = "./methods"
   METHOD_VALUE                    = ""
@@ -955,6 +956,25 @@ module "apikey_get" {
   CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
   AWS_REGION                      = var.AWS_REGION
   LAMBDA_URI                      = var.LAMBDA_GET_APIKEY_INVOKE_ARN
+}
+
+
+module "apikey_put" {
+  source                          = "./methods"
+  METHOD_VALUE                    = ""
+  API_GATEWAY_ID                  = aws_api_gateway_rest_api.api-gateway.id
+  RESOURCE_ID                     = aws_api_gateway_resource.admin_account_userid_resource.id
+  INTEGRATION_RESPONSE_PARAMETERS = local.integration_response_parameters
+  METHOD_RESPONSE_PARAMETERS      = local.method_response_parameters
+  HTTP_METHOD                     = "PUT"
+  AUTHORIZATION = "${var.AUTHORIZATION}"
+  AUTHORIZER_ID = "${var.AUTHORIZATION == "CUSTOM" ? "${aws_api_gateway_authorizer.lambda_developer_portal_authorizer[0].id}" : ""}"
+  FUNCTION_NAME                   = var.GENERATE_NEW_API_KEY_LAMBDA_NAME
+  SOURCE_ARN                      = "${aws_api_gateway_rest_api.api-gateway.execution_arn}/*" 
+  CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
+  AWS_REGION                      = var.AWS_REGION
+  LAMBDA_URI                      = var.LAMBDA_GENERATE_NEW_API_KEY_INVOKE_ARN
+
 }
 
 
@@ -2299,3 +2319,12 @@ resource "aws_lambda_permission" "update_third_party_resources_by_type_lambda_pe
   source_arn    = "${aws_api_gateway_rest_api.api-gateway.execution_arn}/*/*/*"
 }
 
+
+
+resource "aws_lambda_permission" "generate_new_api_key_lambda_permission" {
+  function_name = var.GENERATE_NEW_API_KEY_LAMBDA_NAME
+  statement_id  = "GENERATE_NEW_API_KEY_LAMBDA_PERMISSION"
+  action        = "lambda:InvokeFunction"
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api-gateway.execution_arn}/*/*"
+}
