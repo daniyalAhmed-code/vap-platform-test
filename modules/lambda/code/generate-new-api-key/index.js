@@ -33,17 +33,15 @@ exports.handler = async (req,res) => {
 
     if (usagePlanId.items.hasOwnProperty("id")) {
         usagePlanId = usagePlanId.items[0].id
-        await new Promise((resolve, reject) => {customersController.unsubscribe(userId, reject, resolve) });
+        await new Promise((resolve, reject) => {customersController.unsubscribe(cognitoIdentityId, usagePlanId, reject, resolve)})
         await customersController.deletePreviousApiKey(apiResponse.items[0].id)
         await customersController.renewApiKey(identityId,userId, stage, true);
-        await new Promise((resolve, reject) => {customersController.subscribe(userId, reject, resolve) });
+        await new Promise((resolve, reject) => {customersController.subscribe(cognitoIdentityId, usagePlanId, reject, resolve)})
     }
     else {
         console.log(apiResponse.items[0].value)
         let deleteapikey = await customersController.deletePreviousApiKey(apiResponse.items[0].id)
         await customersController.renewApiKey(identityId,userId, stage, true);
-    
-        
     }
     return rh.callbackRespondWithSimpleMessage(200,"Success")
 
