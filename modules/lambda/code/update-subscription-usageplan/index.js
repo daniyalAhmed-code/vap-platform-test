@@ -8,9 +8,15 @@ exports.handler = async (req, res) => {
     if(typeof req.body == "string")
         req['body'] = JSON.parse(req.body)
     
+    let stage = req.body.stage
+
     const cognitoIdentityId = util.getCognitoIdentityId(req)
+    const userId = util.getCognitoUserId(req)
+    
     console.log(`PUT /subscriptions for Cognito ID: ${cognitoIdentityId}`)
     const usagePlanId = req.pathParameters.usageplanId
+
+    let cognitoId = `${cognitoIdentityId}/${userId}/${stage}`
 
     const catalog = await util.catalog()
     const catalogUsagePlan = util.getUsagePlanFromCatalog(usagePlanId, catalog)
@@ -27,7 +33,7 @@ exports.handler = async (req, res) => {
         // allow subscription if (the usage plan exists, at least 1 of its apis are visible)
     } else {
         const data = await new Promise((resolve, reject) => {
-        customersController.subscribe(cognitoIdentityId, usagePlanId, reject, resolve)
+        customersController.subscribe(cognitoId, usagePlanId, reject, resolve)
         })
         
         return rh.callbackRespondWithJsonBody(200,data)
