@@ -356,3 +356,9 @@ data "archive_file" "lambda_get_all_apis_permissions_for_resource_function" {
   source_dir  = "${path.module}/code/get-all-apis-permissions-for-resources"
   output_path = "${path.module}/zip/get-all-apis-permissions-for-resources.zip"
 }
+
+data "archive_file" "lambda_generate_api_key_for_existing_users" {
+  type        = "zip"
+  source_dir  = "${path.module}/code/generate-api-key-for-existing-users"
+  output_path = "${path.module}/zip/generate-api-key-for-existing-users.zip"
+}
