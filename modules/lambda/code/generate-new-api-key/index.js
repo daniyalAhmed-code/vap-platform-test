@@ -29,7 +29,7 @@ exports.handler = async (req,res) => {
             customersController.getApiKeyForCustomer(cognitoIdentityId, reject, resolve)
           })
 
-    let usagePlanId = await new Promise((resolve, reject) => {customersController.getUsagePlansForCustomer(userId, reject, resolve) });
+    let usagePlanId = await new Promise((resolve, reject) => {customersController.getUsagePlansForCustomer(cognitoIdentityId, reject, resolve) });
 
     if (usagePlanId.items.hasOwnProperty("id")) {
         usagePlanId = usagePlanId.items[0].id
