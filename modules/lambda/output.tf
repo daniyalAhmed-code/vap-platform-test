@@ -413,3 +413,12 @@ output "GET_ALL_APIS_FOR_RESOURCE_LAMBDA_NAME"{
 
 }
 
+output "LAMBDA_GET_SPECIFIC_USER_DETAILS_INVOKE_ARN"{
+  value = aws_lambda_function.lambda_get_specific_user_details_function.invoke_arn
+
+}
+output "GET_SPECIFIC_USER_DETAILS_LAMBDA_NAME"{
+  value = aws_lambda_function.lambda_get_specific_user_details_function.function_name
+
+}
+
