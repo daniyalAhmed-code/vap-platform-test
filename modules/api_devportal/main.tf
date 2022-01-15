@@ -1355,7 +1355,7 @@ module "account_userid_get" {
   FUNCTION_NAME                   = var.BACKEND_LAMBDA_NAME
   CURRENT_ACCOUNT_ID              = var.CURRENT_ACCOUNT_ID
   AWS_REGION                      = var.AWS_REGION
-  LAMBDA_URI                      =var.LAMBDA_GET_CURRENT_USER_PROFILE_INVOKE_ARN
+  LAMBDA_URI                      =var.LAMBDA_GET_SPECIFIC_USER_DETAILS_INVOKE_ARN
 
   REQUEST_TEMPLATES = {
     "application/json" = <<EOF
@@ -2274,6 +2274,15 @@ resource "aws_lambda_permission" "get_third_party_resources_by_type_lambda_permi
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.api-gateway.execution_arn}/*/*/*"
 }
+
+resource "aws_lambda_permission" "get_specific_user_account_details_lambda_permission" {
+  function_name = var.GET_SPECIFIC_USER_DETAILS_LAMBDA_NAME
+  statement_id  = "GET_SPECIFIC_USER_DETAILS_LAMBDA_PERMISSION"
+  action        = "lambda:InvokeFunction"
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api-gateway.execution_arn}/*/*/*"
+}
+
 
 
 resource "aws_lambda_permission" "delete_third_party_resources_by_type_lambda_permission" {

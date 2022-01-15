@@ -1708,3 +1708,35 @@ resource "aws_lambda_function" "lambda_get_all_apis_for_resource_function" {
     }
   }
 }
+
+
+resource "aws_lambda_function" "lambda_get_specific_user_details_function" {
+  provider            = aws.src
+  filename         = "${path.module}/zip/get-account-by-id.zip"
+  function_name    = "${var.RESOURCE_PREFIX}-get-account-by-id"
+  role             = "${var.LAMBDA_BACKEND_ROLE_ARN}"
+  handler          = "index.handler"
+  source_code_hash = "${data.archive_file.lambda_get_specific_user_details_function.output_base64sha256}"
+  runtime          = "nodejs12.x"
+  timeout          = "20"
+  layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
+  environment {
+    variables = {
+      "NODE_ENV"                  = "${var.NODE_ENV}"
+      "WEBSITE_BUCKET_NAME"       = "${var.WEBSITE_BUCKET_NAME}"
+      "StaticBucketName"          = "${var.ARTIFACTS_S3_BUCKET_NAME}"
+      "CustomersTableName"        = "${var.CUSTOMER_TABLE_NAME}"
+      "PreLoginAccountsTableName" = "${var.PRE_LOGIN_ACCOUNT_TABLE_NAME}"
+      "FeedbackTableName"         = "${var.FEEDBACK_TABLE_NAME}"
+      "FeedbackSnsTopicArn"       = "${var.FEEDBACK_SNS_TOPIC_ARN}"
+      "UserPoolId"                = "${var.USERPOOL_ID}"
+      "AdminsGroupName"           = "${var.ADMIN_GROUP_NAME}"
+      "RegisteredGroupName"       = "${var.REGISTERED_GROUP_NAME}"
+      "DevelopmentMode"           = "${var.DEVELOPMENT_MODE}"
+      "CatalogUpdaterFunctionArn" = aws_lambda_function.lambda_catalog_updater_lambda_function.arn
+    }
+  }
+}
