@@ -6,8 +6,16 @@ const rh   =  require('dev-portal-common/responsehandler')
 
 exports.handler = async (req, res) => {
   if(typeof req.pathParameters == "string")
-    req['pathParameters'] = JSON.parse(req.pathParameters)      
+    req['pathParameters'] = JSON.parse(req.pathParameters)
+  
+  if(typeof req.body == "string")
+    req['body'] = JSON.parse(req.body)
+  
+  let stage = req.body.stage
+
   const cognitoIdentityId = util.getCognitoIdentityId(req)
+  let UserId   = util.getCognitoUserId(req)
+  let cognitoId = `${cognitoIdentityId}/${UserId}/${stage}`  
       console.log(`DELETE /subscriptions for Cognito ID: ${cognitoIdentityId}`)
       const usagePlanId = req.pathParameters.usageplanId
     
@@ -19,7 +27,7 @@ exports.handler = async (req, res) => {
 
       } else {
         const data = await new Promise((resolve, reject) => {
-          customersController.unsubscribe(cognitoIdentityId, usagePlanId, reject, resolve)
+          customersController.unsubscribe(cognitoId, usagePlanId, reject, resolve)
         })
         return rh.callbackRespondWithJsonBody(200,data)
         

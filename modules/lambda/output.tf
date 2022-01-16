@@ -413,3 +413,11 @@ output "GET_ALL_APIS_FOR_RESOURCE_LAMBDA_NAME"{
 
 }
 
+output "LAMBDA_GENERATE_NEW_API_KEY_INVOKE_ARN"{
+  value = aws_lambda_function.lambda_generate_new_api_key.invoke_arn
+
+}
+output "GENERATE_NEW_API_KEY_LAMBDA_NAME"{
+  value = aws_lambda_function.lambda_generate_new_api_key.function_name
+
+}
