@@ -38,7 +38,7 @@ exports.handler = async (req, res) => {
         }),
         KeyRotationEnabled: Joi.boolean(),
         Mfa: Joi.boolean().required(),
-        
+        ClientRole : Joi.string().valid("Administrator","Standard"),
         CallBackUrl: Joi.string().required().messages({
           'string.empty': `"callback url" cannot be an empty field`
         }),
@@ -56,10 +56,10 @@ exports.handler = async (req, res) => {
       let UserPoolId = ""
       if(typeof req.body == "string")
         req['body'] = JSON.parse(req.body)
-      
+
       if(typeof req.requestContext == "string")
         req['requestContext'] = JSON.parse(req.requestContext)
-        
+
       let {
         ClientId,
         FirstName,
@@ -70,7 +70,8 @@ exports.handler = async (req, res) => {
         Mfa,
         CallBackUrl,
         CallBackAuth,
-        ApiKeyDuration
+        ApiKeyDuration,
+        ClientRole
       } = req.body
       let body = await schema.validate(req.body);
       console.log(body.error)
@@ -78,7 +79,8 @@ exports.handler = async (req, res) => {
       if ('error' in body) {
         return rh.callbackRespondWithSimpleMessage(400,body.error.details[0].message)
               }
-    
+      
+      
       if(req.requestContext.authorizer.hasOwnProperty("client_id"))
         ClientId =  req.requestContext.authorizer.client_id
       
@@ -95,8 +97,9 @@ exports.handler = async (req, res) => {
         Mfa,
         CallBackUrl,
         CallBackAuth,
-        ApiKeyDuration
-        
+        ApiKeyDuration,
+        ClientRole,
+        null
       )
       return rh.callbackRespondWithJsonBody(200,preLoginAccount)
     }   

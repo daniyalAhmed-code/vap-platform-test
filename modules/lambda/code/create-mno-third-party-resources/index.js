@@ -43,14 +43,6 @@ exports.handler = async (req, res) => {
           'string.pattern.base': "valid patterns are (123) 456-7890,(123)456-7890,123-456-7890,123.456.7890,1234567890,+31636363634,075-63546725",
           'any.required': `"phone number" is a required field`
         }),
-        
-        PhoneNumber: Joi.string().regex(/^[\+]?[0-9]{3}[0-9]{3}[-\s\.]?[0-9]{4,6}$/).required().messages({
-          'string.base': `"phone number" should be a type of 'text'`,
-          'string.empty': `"phone number" cannot be an empty field`,
-          'string.min': `"phone number" should have a minimum length of 9`,
-          'string.pattern.base': "valid patterns are (123) 456-7890,(123)456-7890,123-456-7890,123.456.7890,1234567890,+31636363634,075-63546725",
-          'any.required': `"phone number" is a required field`
-        }),
         KeyRotationEnabled: Joi.boolean(),
         Mfa: Joi.boolean().required(),
         
