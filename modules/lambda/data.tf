@@ -356,3 +356,9 @@ data "archive_file" "lambda_get_all_apis_permissions_for_resource_function" {
   source_dir  = "${path.module}/code/get-all-apis-permissions-for-resources"
   output_path = "${path.module}/zip/get-all-apis-permissions-for-resources.zip"
 }
+
+data "archive_file" "lambda_load_role_mapping_function" {
+  type        = "zip"
+  source_dir  = "${path.module}/code/load-role-mapping"
+  output_path = "${path.module}/zip/load-role-mapping.zip"
+}

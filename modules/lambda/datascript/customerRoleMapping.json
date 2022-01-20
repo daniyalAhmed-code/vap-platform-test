@@ -1,0 +1,160 @@
+[
+    {
+    "role": "Standard",
+    "apis": [
+     {
+      "method": "POST",
+      "description": "allow all post apis",
+      "api": "/*"
+     },
+     {
+      "method": "GET",
+      "description": "allow all put apis",
+      "api": "/*"
+     },
+     {
+      "method": "DELETE",
+      "description": "allow all delete apis",
+      "api": "/*"
+     },
+     {
+      "method": "PUT",
+      "description": "allow all delete apis",
+      "api": "/*"
+     }
+    ],
+    "UserPoolId": "{{ADMIN_USERPOOL_ID}}"
+},
+{
+    "role": "Administrator",
+    "apis": [
+     {
+      "method": "POST",
+      "description": "allow all post apis",
+      "api": "/*"
+     },
+     {
+      "method": "GET",
+      "description": "allow all put apis",
+      "api": "/*"
+     },
+     {
+      "method": "DELETE",
+      "description": "allow all delete apis",
+      "api": "/*"
+     },
+     {
+      "method": "PUT",
+      "description": "allow all delete apis",
+      "api": "/*"
+     }
+    ],
+    "UserPoolId": "{{ADMIN_USERPOOL_ID}}"
+   },
+
+   {
+    "role": "Standard",
+    "apis": [
+     {
+      "method": "POST",
+      "description": "allow all post apis",
+      "api": "/*"
+     },
+     {
+      "method": "GET",
+      "description": "allow all put apis",
+      "api": "/*"
+     },
+     {
+      "method": "DELETE",
+      "description": "allow all delete apis",
+      "api": "/*"
+     },
+     {
+      "method": "PUT",
+      "description": "allow all delete apis",
+      "api": "/*"
+     }
+    ],
+    "UserPoolId": "{{MNO_USERPOOL_ID}}"
+},
+{
+    "role": "Administrator",
+    "apis": [
+     {
+      "method": "POST",
+      "description": "allow all post apis",
+      "api": "/*"
+     },
+     {
+      "method": "GET",
+      "description": "allow all put apis",
+      "api": "/*"
+     },
+     {
+      "method": "DELETE",
+      "description": "allow all delete apis",
+      "api": "/*"
+     },
+     {
+      "method": "PUT",
+      "description": "allow all delete apis",
+      "api": "/*"
+     }
+    ],
+    "UserPoolId": "{{MNO_USERPOOL_ID}}"
+   },
+
+   {
+    "role": "Standard",
+    "apis": [
+     {
+      "method": "POST",
+      "description": "allow all post apis",
+      "api": "/*"
+     },
+     {
+      "method": "GET",
+      "description": "allow all put apis",
+      "api": "/*"
+     },
+     {
+      "method": "DELETE",
+      "description": "allow all delete apis",
+      "api": "/*"
+     },
+     {
+      "method": "PUT",
+      "description": "allow all delete apis",
+      "api": "/*"
+     }
+    ],
+    "UserPoolId": "{{THIRD_PARTY_USERPOOL_ID}}"
+},
+{
+    "role": "Administrator",
+    "apis": [
+     {
+      "method": "POST",
+      "description": "allow all post apis",
+      "api": "/*"
+     },
+     {
+      "method": "GET",
+      "description": "allow all put apis",
+      "api": "/*"
+     },
+     {
+      "method": "DELETE",
+      "description": "allow all delete apis",
+      "api": "/*"
+     },
+     {
+      "method": "PUT",
+      "description": "allow all delete apis",
+      "api": "/*"
+     }
+    ],
+    "UserPoolId": "{{THIRD_PARTY_USERPOOL_ID}}"
+   }
+]
