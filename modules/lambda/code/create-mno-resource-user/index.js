@@ -20,7 +20,7 @@ exports.handler = async (req, res) => {
           'string.min': `"first name" should have a minimum length of 3`,
           'any.required': `"first name" is a required field`
         }),
-        MnoLocation : Joi.string().required(),
+        MnoLocation : Joi.array().items(Joi.string()).required(),
         LastName: Joi.string().regex(/^(?=.{1,50}$)[a-zA-Z]+(?:['_.\s][a-z]+)*$/).required().messages({
           'string.base': `"last name" should be a type of 'text'`,
           'string.empty': `"last name" cannot be an empty field`,
