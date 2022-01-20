@@ -1708,3 +1708,28 @@ resource "aws_lambda_function" "lambda_get_all_apis_for_resource_function" {
     }
   }
 }
+
+
+
+resource "aws_lambda_function" "lambda_load_role_mapping_function" {
+  provider            = aws.src
+  filename         = "${path.module}/zip/load-role-mapping.zip"
+  function_name    = "${var.RESOURCE_PREFIX}-load-role-mapping"
+  role             = "${var.LAMBDA_BACKEND_ROLE_ARN}"
+  handler          = "index.handler"
+  source_code_hash = "${data.archive_file.lambda_create_permissions_for_api_function.output_base64sha256}"
+  runtime          = "nodejs12.x"
+  timeout          = "20"
+  layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  tracing_config {
+    mode = "PassThrough"
+  }  
+  environment {
+    variables = {
+      "ADMIN_USERPOOL_ID"       = "${var.API_PERMISSION_TABLE_NAME}"
+      "MNO_USERPOOL_ID"         = "${var.MNO_USERPOOL_ID}",
+      "THIRD_PARTY_USERPOOL_ID" = "${var.THIRD_PARTY_USERPOOL_ID}",
+      "ROLE_MAPPING_TABLE"      = "${var.API_ROLE_PERMISSION_TABLE_NAME}",
+    }
+  }
+}
