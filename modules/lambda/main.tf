@@ -1708,3 +1708,21 @@ resource "aws_lambda_function" "lambda_get_all_apis_for_resource_function" {
     }
   }
 }
+
+
+resource "aws_lambda_function" "lambda_generate_apikey_for_existing_users" {
+  provider            = aws.src
+  filename         = "${path.module}/zip/generate-api-key-for-existing-users.zip"
+  function_name    = "${var.RESOURCE_PREFIX}-generate-api-key-for-existing-users"
+  role             = "${var.LAMBDA_BACKEND_ROLE_ARN}"
+  handler          = "index.handler"
+  source_code_hash = "${data.archive_file.lambda_get_apikey_function.output_base64sha256}"
+  runtime          = "nodejs12.x"
+  timeout          = "20"
+  layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  environment {
+    variables = {
+      "CustomersTableName"        = "${var.CUSTOMER_TABLE_NAME}"
+    }
+  }
+}
