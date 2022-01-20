@@ -9,22 +9,15 @@ const common = require('dev-portal-common/common')
 
 exports.handler = async (req, res) => {
 
-    let tableName = `${process.env.CustomerTableName}`
-    let params = {
-        TableName : tableName,
+  let listAllUsers = await customersController.listAllUsers()
+  for (let user of listAllUsers.Items){
+      if (!user.ApiKeyId.hasOwnProperty("stage")){
+        let userId = user.Id
+        let username = user.Username
+        await customersController.createExistingUsersApiKey(userId,username)
       }
-    let listAllUsers = await customersController.listAllUsers()
-    for (let user of listAllUsers.Items){
-        if (typeof user.ApiKeyId == "string" && user.ApiKeyId !== "NO_API_KEY"){
-            let apiKey = user.ApiKeyId
-                await customersController.createExistingUsersApiKey({
-                  userId: user.Username,
-                  identityId: user.Id,
-                  apiKeyId:apiKey
-                })
-        }
 
-    }
-    return rh.callbackRespondWithSimpleMessage(200,"Success")
+  }
+  return rh.callbackRespondWithSimpleMessage(200,"Success")
 
 }
