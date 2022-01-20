@@ -1,9 +1,12 @@
 const customersController = require('dev-portal-common/customers-controller')
 const util = require('dev-portal-common/util')
 const rh   =  require('dev-portal-common/responsehandler')
+const Joi = require('joi');
+const common = ('dev-portal-common/common')
+
 exports.handler = async (req,res) => {
     const schema = Joi.object().keys({
-        stage: Joi.string().valid("prod","alpha","beta"),
+        stage: Joi.string().valid(common.stages.production,common.stages.alpha,common.stages.beta),
       });
     
     if(typeof req.queryStringParameters == "string")
@@ -11,7 +14,8 @@ exports.handler = async (req,res) => {
 
     if(typeof req.body == "string")
         req['body'] = JSON.parse(req.body)
-    const {stage} = req.body
+
+    const stage = req.body.stage
     let body = await schema.validate(req.body);
     console.log(body.error)
     
@@ -30,20 +34,33 @@ exports.handler = async (req,res) => {
           })
 
     let usagePlanId = await new Promise((resolve, reject) => {customersController.getUsagePlansForCustomer(userId, reject, resolve) });
-
     if (usagePlanId.items.hasOwnProperty("id")) {
         usagePlanId = usagePlanId.items[0].id
         await new Promise((resolve, reject) => {customersController.unsubscribe(cognitoIdentityId, usagePlanId, reject, resolve)})
         await customersController.deletePreviousApiKey(apiResponse.items[0].id)
-        await customersController.renewApiKey(identityId,userId, stage, true);
+        let newApiKey = await customersController.renewApiKey(identityId,userId, stage, true);
+        await updateUser(identityId,newApiKey,stage)
+
         await new Promise((resolve, reject) => {customersController.subscribe(cognitoIdentityId, usagePlanId, reject, resolve)})
     }
     else {
-        console.log(apiResponse.items[0].value)
         let deleteapikey = await customersController.deletePreviousApiKey(apiResponse.items[0].id)
-        await customersController.renewApiKey(identityId,userId, stage, true);
+        let newApiKey =await customersController.renewApiKey(identityId,userId, stage, true);
+        await updateUser(identityId,newApiKey,stage)
+
     }
     return rh.callbackRespondWithSimpleMessage(200,"Success")
 
     }    
+async function updateUser(identityId,newApiKey,stage) {
+    let userdetails = await customersController.getAccountDetails(identityId)
+        
+    for(let user_stage of userdetails.ApiKeyId.stage)
+    {
+        if(user_stage.Name == stage)
+            user_stage['id'] = newApiKey.id
+    }
+    let apis = userdetails.ApiKeyId.stage
 
+    let updateuser = await customersController.updateCustomerApiKeyId(identityId,apis)
+}
