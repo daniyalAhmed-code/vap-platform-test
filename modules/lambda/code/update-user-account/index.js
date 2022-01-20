@@ -24,72 +24,70 @@ exports.handler = async (req, res) => {
       'string.pattern.base': "last name cannot have space in between",
       'any.required': `"last name" is a required field`
     }),
-    CallbackAuthType: Joi.string().valid("apiKey","basicAuth","privateCertificate"),
     Mfa: Joi.boolean().required(),
-    KeyRotationEnabled: Joi.boolean().default(false),
-    CallBackUrl: Joi.string().required().messages({
-      'string.empty': `"callback url" cannot be an empty field`
-    }),
-    isValidateCallBackAuth:Joi.boolean().default(true),
-    CallBackAuth: Joi.when('CallbackAuthType', {is : "apiKey", then: Joi.string().required()})
+    ApiKeyId: Joi.object().keys({
+      stage:Joi.array().items(Joi.object().keys({
+        Name:Joi.string().valid("alpha","beta","production"),
+      KeyRotationEnabled:Joi.boolean().default(false),
+      CallBackUrl:Joi.string().required().messages({
+        'string.empty': `"callback url" cannot be an empty field`
+      }),
+      CallbackAuthType: Joi.string().valid("apiKey","basicAuth","privateCertificate"),
+      CallBackAuth: Joi.when('CallbackAuthType', {is : "apiKey", then: Joi.string().required()})
     .when('CallbackAuthType', {is : "basicAuth", then: Joi.object().keys({username:Joi.string().required(),password:Joi.string().required()})})
     .when('CallbackAuthType', {is : "privateCertificate", then: Joi.string().required()})
     .when("isValidateCallBackAuth", {is : false, then: Joi.string().optional()}),
-
-    Mno: Joi.string().required(),
-    MnoLocation: Joi.string().required(),
+    isValidateCallBackAuth:Joi.boolean().default(true),
     ApiKeyDuration: Joi.number().min(1).max(90).required().messages({
       'number.min': `"api duration key" cannot be less than 1`,
       'number.max': "api key duration cannot be greater than 90",
-    })
+    }),
+    CallBackAuthARN:Joi.string()
+    }),           
+    )}),
+       
   });
+
 
   if(typeof req.body == "string")
     req['body'] = JSON.parse(req.body)
 
-    if(typeof req.pathParameters == "string")
+  if(typeof req.pathParameters == "string")
     req['pathParameters'] = JSON.parse(req.pathParameters)
-  
+
   let userId = req.pathParameters.userId
   
-  if (typeof userId !== 'string' || userId === '') {
-    res.status(400).json({
-      message: 'Invalid value for "userId" URL parameter.'
-    })
-    return
-  }
+  if (typeof userId !== 'string' || userId === '')
+    return rh.callbackRespondWithError(400,'Invalid value for "userId" URL parameter.')
+
+ 
   let data = await customersController.getAccountDetails(userId)
-  if (data == null) {
-    return res.status(404).json({
-      message: "Account doesnot Exists"
-    })
-  }
   
-  if(!req.body.hasOwnProperty('KeyRotationEnabled'))
-  {
-    req.body.KeyRotationEnabled = false
-  }
+  if (data == null)
+    return rh.callbackRespondWithError(404,'Account does not Exists')
   
-  if (!req.body.CallBackAuth) {
-    req.body.isValidateCallBackAuth = false
-    req.body.CallBackAuth = "NONE"
-  }
+  for(let stage of req.body.ApiKeyId.stage){
+
+  if (!stage.CallBackAuth)
+    stage.CallBackAuth = "NONE"
+
+  if(stage.hasOwnProperty('KeyRotationEnabled'))
+    stage.KeyRotationEnabled = false
+
+
   
+}  
   let body = await schema.validate(req.body);
-  if ('error' in body) {
-    res.status(400).json({
-      message: body.error.details[0].message
-    })
-    return
-  }
+  if ('error' in body) 
+    return rh.callbackRespondWithError(400,body.error.details[0].message)
 
   body = Object.assign(data, body.value)
-
+    
   const updateAccount = await customersController.updateAccountDetails(
     userId,
-    data.CallBackAuthARN,
+    body.ApiKeyId.stage,
     body
   )
       
-      return rh.callbackRespondWithJsonBody(200,updateAccount)
-    }   
+  return rh.callbackRespondWithJsonBody(200,updateAccount)
+}   

@@ -9,32 +9,40 @@ const util = require('dev-portal-common/util')
 // function getCognitoKey (req) {
 //   return req.apiGateway.event.requestContext.authorizer.claims.iss + ' ' + getCognitoUsername(req)
 // }
+const AWS = require('aws-sdk')
+
 const rh   =  require('dev-portal-common/responsehandler')
 
 exports.handler = async (req, res) => {
   console.log(req)
   if(typeof req.body == "string")
         req['body'] = JSON.parse(req.body)
-  
+
   const cognitoIdentityId = util.getCognitoIdentityId(req)
   const cognitoUserId = util.getCognitoUserId(req)
   console.log(`POST /signin for identity ID [${cognitoIdentityId}]`)
-  
-  try {
-      await promisify2(customersController.ensureCustomerItem)(
-          cognitoIdentityId,
-          cognitoUserId,
-          'NO_API_KEY'
-        )
-        await customersController.ensureApiKeyForCustomer({
-          userId: cognitoUserId,
-          identityId: cognitoIdentityId
-        })
-      return rh.callbackRespondSimpleMessage(200,"Success")
 
+  let userdetails = await customersController.getAccountDetails(cognitoIdentityId)
+  for (let stage of userdetails.ApiKeyId.stage){
+   try {
+       let apiKey = await customersController.ensureApiKeyForCustomer({
+           userId: cognitoUserId,
+           identityId: cognitoIdentityId,
+           stage : stage
+         })
+       stage['id'] = apiKey.id
+   }
+   catch (error) {
+       console.log(`error: ${error}`)
+     return rh.callbackRespondWithError(200,error)
+   }
   }
-  catch (error) {
-      console.log(`error: ${error}`)
-    return rh.callbackRespondWithError(200,error)
-  }
+ 
+  let apis = userdetails.ApiKeyId
+  
+  let updateuser = await customersController.updateCustomerApiKeyId(cognitoIdentityId,apis).promise()
+
+    
+  return rh.callbackRespondWithSimpleMessage(200,"Success")
+  
 }    
