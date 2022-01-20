@@ -1100,7 +1100,15 @@ resource "aws_iam_policy" "lambda_api_key_rotation_role_policy" {
           "Action": [
               "apigateway:GET"
           ],
-           "Resource": "arn:aws:apigateway:${var.AWS_REGION}::/apis/${var.API_GATEWAY_ID}"
+           "Resource": [
+              "arn:aws:apigateway:${var.AWS_REGION}::/apis/${var.API_GATEWAY_ID}",
+              "arn:aws:apigateway:${var.AWS_REGION}::/apikeys",
+              "arn:aws:apigateway:${var.AWS_REGION}::/usageplans/",
+              "arn:aws:apigateway:${var.AWS_REGION}::/restapis/",
+              "arn:aws:apigateway:${var.AWS_REGION}::/apikeys/*",
+              "arn:aws:apigateway:${var.AWS_REGION}::/restapis/*",
+              "arn:aws:apigateway:${var.AWS_REGION}::/usageplans/*"
+          ]
         },
         {
           "Effect": "Allow",
@@ -1154,14 +1162,25 @@ resource "aws_iam_policy" "lambda_invoke_api_key_rotation_role_policy" {
           "Effect": "Allow",
           "Action": [
               "apigateway:POST",
-              "apigateway:DELETE"
+              "apigateway:DELETE",
+              "apigateway:GET",
+            
           ],
-           "Resource": "arn:aws:apigateway:${var.AWS_REGION}::/apis/${var.API_GATEWAY_ID}"
+           "Resource": [
+              "arn:aws:apigateway:${var.AWS_REGION}::/apis/${var.API_GATEWAY_ID}",
+              "arn:aws:apigateway:${var.AWS_REGION}::/usageplans",
+              "arn:aws:apigateway:${var.AWS_REGION}::/restapis",
+              "arn:aws:apigateway:${var.AWS_REGION}::/apikeys/*",
+              "arn:aws:apigateway:${var.AWS_REGION}::/apikeys",
+              "arn:aws:apigateway:${var.AWS_REGION}::/restapis/*",
+              "arn:aws:apigateway:${var.AWS_REGION}::/usageplans/*",
+          ]
         },
         {
           "Effect": "Allow",
           "Action": [
-              "dynamodb:UpdateItem"
+              "dynamodb:UpdateItem",
+              "dynamodb:Query"
           ],
           "Resource": [
               "arn:aws:dynamodb:${var.AWS_REGION}:${var.CURRENT_ACCOUNT_ID}:table/${var.CUSTOMER_TABLE_NAME}"
