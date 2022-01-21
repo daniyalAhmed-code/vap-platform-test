@@ -40,7 +40,7 @@ exports.handler = async (req, res) => {
         ClientRole : Joi.string().valid("Administrator","Standard"),
         ApiKeyId: Joi.array().items(Joi.object({
           stage:Joi.object().keys({
-            Nname:Joi.string().valid("alpha","beta","production"),
+            Name:Joi.string().valid("alpha","beta","production"),
             KeyRotationEnabled:Joi.boolean().default(false),
             CallBackUrl:Joi.string().required().messages({
             'string.empty': `"callback url" cannot be an empty field`

@@ -15,7 +15,7 @@ exports.handler = async (req, res) => {
       'string.min': `"first name" should have a minimum length of 3`,
       'any.required': `"first name" is a required field`
     }),
-
+    ClientRole : Joi.string().valid("Administrator","Standard"),
     targetLastName: Joi.string().regex(/^(?=.{1,50}$)[a-zA-Z]+(?:['_.\s][a-z]+)*$/).required().messages({
       'string.base': `"last name" should be a type of 'text'`,
       'string.empty': `"last name" cannot be an empty field`,
@@ -69,6 +69,7 @@ exports.handler = async (req, res) => {
     targetFirstName,
     targetLastName,
     targetMfa,
+    ClientRole,
     ApiKeyId
   } = req.body
   let body = await schema.validate(req.body);
@@ -90,6 +91,7 @@ exports.handler = async (req, res) => {
     targetLastName,
     ApiKeyId,
     targetMfa,
+    ClientRole,
     inviterUserSub: util.getCognitoIdentitySub(req),
     inviterUserId
   })
