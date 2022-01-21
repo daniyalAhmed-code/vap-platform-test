@@ -37,9 +37,9 @@ exports.handler = async (req, res) => {
         }),
         Mfa: Joi.boolean().required(),
         ClientRole : Joi.string().valid("Administrator","Standard"),
-        ApiKeyId: Joi.array().items(Joi.object({
-          stage:Joi.object().keys({
-            Nname:Joi.string().valid("alpha","beta","production"),
+        ApiKeyId: Joi.object().keys({
+          stage:Joi.array().items({
+            Name:Joi.string().valid("alpha","beta","production"),
             KeyRotationEnabled:Joi.boolean().default(false),
             CallBackUrl:Joi.string().required().messages({
             'string.empty': `"callback url" cannot be an empty field`
@@ -53,9 +53,9 @@ exports.handler = async (req, res) => {
             'number.max': "api key duration cannot be greater than 90",
           })
         }),           
-        })),       
+      }),       
       });
-
+    
       console.log(JSON.stringify(req, null, 2))
       let UserPoolId = ""
       if(typeof req.body == "string")
@@ -67,9 +67,9 @@ exports.handler = async (req, res) => {
         LastName,
         PhoneNumber,
         EmailAddress,
-        ClientRole,
         Mfa,
-        ApiKeyId
+        ApiKeyId,
+        ClientRole
       } = req.body
       let body = await schema.validate(req.body);
       console.log(body.error)
@@ -87,10 +87,11 @@ exports.handler = async (req, res) => {
         PhoneNumber,
         FirstName,
         LastName,
-        ClientRole,
         Mfa,
         ApiKeyId,
+        ClientRole,
         null
+        
       )
       return rh.callbackRespondWithJsonBody(200,preLoginAccount)
     }   

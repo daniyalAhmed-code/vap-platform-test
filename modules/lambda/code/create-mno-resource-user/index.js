@@ -37,9 +37,9 @@ exports.handler = async (req, res) => {
           'any.required': `"phone number" is a required field`
         }),
         Mfa: Joi.boolean().required(),
-        ClientRole : Joi.string().valid("Administrator","Standard"),
-        ApiKeyId: Joi.array().items(Joi.object({
-          stage:Joi.object().keys({
+        ClientRole : Joi.string().valid("Adminstrator","Standard"),
+        ApiKeyId: Joi.object().keys({
+          stage:Joi.array().items({
             Name:Joi.string().valid("alpha","beta","production"),
             KeyRotationEnabled:Joi.boolean().default(false),
             CallBackUrl:Joi.string().required().messages({
@@ -54,7 +54,7 @@ exports.handler = async (req, res) => {
             'number.max': "api key duration cannot be greater than 90",
           })
         }),           
-        })),       
+      }),       
       });
 
       console.log(JSON.stringify(req, null, 2))
@@ -89,9 +89,9 @@ exports.handler = async (req, res) => {
         PhoneNumber,
         FirstName,
         LastName,
-        ClientRole,
         Mfa,
         ApiKeyId,
+        ClientRole,
         MnoLocation  
       )
       return rh.callbackRespondWithJsonBody(200,preLoginAccount)
