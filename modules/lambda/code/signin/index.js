@@ -10,6 +10,7 @@ const util = require('dev-portal-common/util')
 //   return req.apiGateway.event.requestContext.authorizer.claims.iss + ' ' + getCognitoUsername(req)
 // }
 const rh   =  require('dev-portal-common/responsehandler')
+const common = require('dev-portal-common/common')
 
 exports.handler = async (req, res) => {
   console.log(req)
@@ -19,18 +20,28 @@ exports.handler = async (req, res) => {
   const cognitoIdentityId = util.getCognitoIdentityId(req)
   const cognitoUserId = util.getCognitoUserId(req)
   console.log(`POST /signin for identity ID [${cognitoIdentityId}]`)
+  let stages = [common.stages.alpha,common.stages.beta,common.stages.prod]
+
   
   try {
       await promisify2(customersController.ensureCustomerItem)(
           cognitoIdentityId,
           cognitoUserId,
-          'NO_API_KEY'
+          {
+            alpha:"NO_API_KEY",
+            beta : "NO_API_KEY",
+            prod : "NO_API_KEY"
+          }
         )
+        for (let stage of stages) {
         await customersController.ensureApiKeyForCustomer({
           userId: cognitoUserId,
-          identityId: cognitoIdentityId
+          identityId: cognitoIdentityId,
+          stage : stage
         })
-      return rh.callbackRespondSimpleMessage(200,"Success")
+      }
+      
+      return rh.callbackRespondWithSimpleMessage(200,"Success")
 
   }
   catch (error) {

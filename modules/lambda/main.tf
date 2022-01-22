@@ -1708,3 +1708,39 @@ resource "aws_lambda_function" "lambda_get_all_apis_for_resource_function" {
     }
   }
 }
+
+
+resource "aws_lambda_function" "lambda_generate_new_api_key" {
+  provider            = aws.src
+  filename         = "${path.module}/zip/generate-new-api-key.zip"
+  function_name    = "${var.RESOURCE_PREFIX}-generate-new-api-key"
+  role             = "${var.LAMBDA_BACKEND_ROLE_ARN}"
+  handler          = "index.handler"
+  memory_size      = 512
+  source_code_hash = "${data.archive_file.lambda_api_key_rotation_function.output_base64sha256}"
+  runtime          = "nodejs12.x"
+  timeout          = "900"
+  layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  environment {
+    variables = {
+      "CustomersTableName" = "${var.CUSTOMER_TABLE_NAME}"
+    }
+  }
+}
+
+resource "aws_lambda_function" "lambda_generate_apikey_for_existing_users" {
+  provider            = aws.src
+  filename         = "${path.module}/zip/generate-apikey-for-existing-users.zip"
+  function_name    = "${var.RESOURCE_PREFIX}-generate-apikey-for-existing-users"
+  role             = "${var.LAMBDA_BACKEND_ROLE_ARN}"
+  handler          = "index.handler"
+  source_code_hash = "${data.archive_file.lambda_get_apikey_function.output_base64sha256}"
+  runtime          = "nodejs12.x"
+  timeout          = "20"
+  layers           = ["${aws_lambda_layer_version.lambda-common-layer.arn}"]
+  environment {
+    variables = {
+      "CustomersTableName"        = "${var.CUSTOMER_TABLE_NAME}"
+    }
+  }
+}

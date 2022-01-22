@@ -356,3 +356,15 @@ data "archive_file" "lambda_get_all_apis_permissions_for_resource_function" {
   source_dir  = "${path.module}/code/get-all-apis-permissions-for-resources"
   output_path = "${path.module}/zip/get-all-apis-permissions-for-resources.zip"
 }
+
+data "archive_file" "lambda_generate_new_api_key" {
+  type        = "zip"
+  source_dir  = "${path.module}/code/generate-new-api-key"
+  output_path = "${path.module}/zip/generate-new-api-key.zip"
+}
+
+data "archive_file" "lambda_generate_apikey_for_existing_users" {
+  type        = "zip"
+  source_dir  = "${path.module}/code/generate-apikey-for-existing-users"
+  output_path = "${path.module}/zip/generate-apikey-for-existing-users.zip"
+}
