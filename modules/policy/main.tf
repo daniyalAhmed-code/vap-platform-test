@@ -198,7 +198,8 @@ resource "aws_iam_policy" "lambda_backend_policy" {
       ],
       "Resource": ["arn:aws:cognito-idp:${var.AWS_REGION}:${var.CURRENT_ACCOUNT_ID}:userpool/${var.USERPOOL_ID}",
       "arn:aws:cognito-idp:${var.AWS_REGION}:${var.CURRENT_ACCOUNT_ID}:userpool/${var.MNO_USERPOOL_ID}",
-      "arn:aws:cognito-idp:${var.AWS_REGION}:${var.CURRENT_ACCOUNT_ID}:userpool/${var.THIRD_PARTY_USERPOOL_ID}"
+      "arn:aws:cognito-idp:${var.AWS_REGION}:${var.CURRENT_ACCOUNT_ID}:userpool/${var.THIRD_PARTY_USERPOOL_ID}",
+       "${var.CREATE_INITIAL_RESOURCES_LAMBDA_ARN}"
       ]
 
 },

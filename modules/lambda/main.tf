@@ -1708,3 +1708,27 @@ resource "aws_lambda_function" "lambda_get_all_apis_for_resource_function" {
     }
   }
 }
+
+resource "aws_lambda_permission" "create_initial_admin_account" {
+    statement_id = "create-initial-admin-account"
+    action = "lambda:InvokeFunction"
+    function_name = aws_lambda_function.create_initial_resources.function_name
+    principal = "events.amazonaws.com"
+    source_arn = "${aws_lambda_function.create_initial_admin_account.arn}"
+}
+
+resource "aws_lambda_permission" "load_role_mapping" {
+    statement_id = "load-role-mapping"
+    action = "lambda:InvokeFunction"
+    function_name = aws_lambda_function.load_role_mapping.function_name
+    principal = "events.amazonaws.com"
+    source_arn = "${aws_lambda_function.create_initial_admin_account.arn}"
+}
+
+
+resource "null_resource" "run_lambda_function" {
+    provisioner "local-exec" {
+        command = "aws lambda invoke --function-name ${aws_lambda_function.create_initial_resources.function_name} /tmp/output.log ;"
+
+    }   
+}
