@@ -413,3 +413,7 @@ output "GET_ALL_APIS_FOR_RESOURCE_LAMBDA_NAME"{
 
 }
 
+
+output "CREATE_INITIAL_RESOURCES_LAMBDA_ARN" {
+  value = aws_lambda_function.create_initial_resources.arn
+}
