@@ -17,7 +17,7 @@ exports.handler = async (req, res) => {
   let apis = {}
 
   if(typeof req.body == "string")
-        req['body'] = JSON.parse(req.body)
+    req['body'] = JSON.parse(req.body)
 
   const cognitoIdentityId = util.getCognitoIdentityId(req)
   const cognitoUserId = util.getCognitoUserId(req)
@@ -30,65 +30,62 @@ exports.handler = async (req, res) => {
   let userdetails = await customersController.getAccountDetails(cognitoIdentityId)
   
   if (userdetails.hasOwnProperty('ApiKeyId') && userdetails.ApiKeyId.stage[0].id == undefined){
-      console.log("in if")
     let user_stage= []
     stages =     userdetails.ApiKeyId.stage
     for (let stage of stages){
-       let apiKey = await customersController.ensureApiKeyForCustomer({
-           userId: cognitoUserId,
-           identityId: cognitoIdentityId,
-           stage : stage
-         })
-         let user_stage_details = {
-            "id" : apiKey.id,
-            "Name": (stage.hasOwnProperty('name')) ? stage.name : stage.Name,
-           "ApiKeyDuration":(stage.hasOwnProperty('apiKeyDuration')) ? stage.apiKeyDuration : stage.ApiKeyDuration,
-           "KeyRotaionEnabled":(stage.hasOwnProperty('apiKeyDuration')) ? stage.keyRotation : stage.KeyRotaionEnabled,
-           "CallbackAuthType":(stage.hasOwnProperty('type')) ? stage.type : stage.CallbackAuthType,
-           "CallBackUrl":(stage.hasOwnProperty('CallBackUrl')) ? stage.CallBackUrl : stage.callBackUrl,
-           "CallBackAuthARN":stage.CallBackAuthARN
-        }
-        user_stage.push(user_stage_details)
+      let apiKey = await customersController.ensureApiKeyForCustomer({
+        userId: cognitoUserId,
+        identityId: cognitoIdentityId,
+        stage : stage
+        })
+      let user_stage_details = {
+        "id" : apiKey.id,
+        "Name": (stage.hasOwnProperty('name')) ? stage.name : stage.Name,
+        "ApiKeyDuration":(stage.hasOwnProperty('apiKeyDuration')) ? stage.apiKeyDuration : stage.ApiKeyDuration,
+        "KeyRotaionEnabled":(stage.hasOwnProperty('apiKeyDuration')) ? stage.keyRotation : stage.KeyRotaionEnabled,
+        "CallbackAuthType":(stage.hasOwnProperty('type')) ? stage.type : stage.CallbackAuthType,
+        "CallBackUrl":(stage.hasOwnProperty('CallBackUrl')) ? stage.CallBackUrl : stage.callBackUrl,
+        "CallBackAuthARN":stage.CallBackAuthARN
+      }
+      user_stage.push(user_stage_details)
    }
-     apis = {"stage":user_stage}
-       let updateuser = await customersController.updateCustomerApiKeyId(cognitoIdentityId,apis)
-  }
+  apis = {"stage":user_stage}
+  let updateuser = await customersController.updateCustomerApiKeyId(cognitoIdentityId,apis)
+}
     
-else if (userdetails.ApiKeyId == undefined)
-  {   console.log("in else if")    
-      let user_stage= []
-       stages = [common.stages.alpha,common.stages.beta,common.stages.production]
-       userdetails.ApiKeyId = {}
-	    userdetails.ApiKeyId.stage = []
-       for (let stage of stages){
-       let apiKey = await customersController.ensureApiKeyForCustomer({
-         userId: cognitoUserId,
-         identityId: cognitoIdentityId,
-           stage : stage
-       })
-       
-       let user_stage_details = {
-	             "id" : apiKey.id,
-	              "name": stage,
-            "apiKeyDuration":90,
-            "keyRotation":false,
-            "type":"none",
-	            "CallBackAuthARN":"none",
-	            "CallBackUrl":"none"
-       }
-       user_stage.push(user_stage_details)
-       apis= {"stage":user_stage}
-        let updateuser = await customersController.updateCustomerApiKeyId(cognitoIdentityId,apis)
+else if (userdetails.ApiKeyId == undefined){
+  let user_stage= []
+  stages = [common.stages.alpha,common.stages.beta,common.stages.production]
+  userdetails.ApiKeyId = {}
+  userdetails.ApiKeyId.stage = []
+  for (let stage of stages){
+    let apiKey = await customersController.ensureApiKeyForCustomer({
+      userId: cognitoUserId,
+      identityId: cognitoIdentityId,
+        stage : stage
+    })
+  
+  let user_stage_details = {
+    "id" : apiKey.id,
+    "name": stage,
+    "apiKeyDuration":90,
+    "keyRotation":false,
+    "type":"none",
+    "CallBackAuthARN":"none",
+    "CallBackUrl":"none"
+    }
+  user_stage.push(user_stage_details)
+  apis= {"stage":user_stage}
+  let updateuser = await customersController.updateCustomerApiKeyId(cognitoIdentityId,apis)
   } 
 }
-else
-    {   console.log("in else")
-        return rh.callbackRespondWithSimpleMessage(200,"Success")
-    }
+else{
+  return rh.callbackRespondWithSimpleMessage(200,"Success")
+  }
 
 //   let updateuser = await customersController.updateCustomerApiKeyId(cognitoIdentityId,apis)
 
     
-  return rh.callbackRespondWithSimpleMessage(200,"Success")
+return rh.callbackRespondWithSimpleMessage(200,"Success")
   
 }    
